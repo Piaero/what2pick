@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 const MongoClient = require('mongodb').MongoClient
+require('dotenv').config()
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -10,9 +11,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // MongoDB Database
-var databaseURI = require('./config/databaseURI.js')
-
-MongoClient.connect(databaseURI, {
+MongoClient.connect(process.env.MONGODB_URI, {
     useUnifiedTopology: true
   })
   .then(client => {
@@ -27,7 +26,6 @@ MongoClient.connect(databaseURI, {
         })
         .catch(error => console.error(error))
     })
-
   })
 
 
