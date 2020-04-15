@@ -2,3 +2,6 @@
 
 # dependencies
 /node_modules
+
+# Atlas Database connection string. Contains user and passowrd!
+backend/config/databaseURI.js

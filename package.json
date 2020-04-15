@@ -10,8 +10,10 @@
     "heroku-postbuild": "cd frontend && npm install && npm install --only=dev --no-shrinkwrap && npm run build"
   },
   "dependencies": {
-    "body-parser": "^1.18.3",
-    "express": "^4.16.4"
+    "body-parser": "^1.19.0",
+    "express": "^4.16.4",
+    "mongodb": "^3.5.6",
+    "mongoose": "^5.9.9"
   },
   "devDependencies": {
     "concurrently": "^4.0.1"
