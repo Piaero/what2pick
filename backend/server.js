@@ -16,32 +16,9 @@ MongoClient.connect(process.env.MONGODB_URI, {
   })
   .then(client => {
     console.log('Connected to Database')
-    const db = client.db('star-wars-quotes')
-    const quotesCollection = db.collection('quotes')
-
-    app.post('/quotes', (req, res) => {
-      quotesCollection.insertOne(req.body)
-        .then(result => {
-          res.redirect('/')
-        })
-        .catch(error => console.error(error))
-    })
+    const db = client.db('what2pick')
+    const countersCollection = db.collection('counters')
   })
-
-
-// API calls
-app.get('/api/hello', (req, res) => {
-  res.send({
-    express: 'Hello From Express'
-  });
-});
-
-app.post('/api/world', (req, res) => {
-  console.log(req.body);
-  res.send(
-    `I received your POST request. This is what you sent me: ${req.body.post}`,
-  );
-});
 
 if (process.env.NODE_ENV === 'production') {
   // Serve any static files
