@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 
-import logo from './logo.svg';
-
 import './App.css';
+
+import { Header } from './components/Header.js';
+import { MainSectionGrid } from './components/MainSectionGrid.js';
+import { Footer } from './components/Footer.js';
 
 class App extends Component {
   state = {
@@ -10,10 +12,14 @@ class App extends Component {
     post: '',
     responseToPost: '',
   };
-  
-render() {
+
+  render() {
     return (
-      'blank site'
+      <div>
+        <Header />
+        <MainSectionGrid />
+        <Footer />
+      </div>
     );
   }
 }

@@ -1,0 +1,10 @@
+.logo {
+  float: left;
+  height: 90px;
+  width: 145px;
+}
+
+.title {
+  float: left;
+  font-family: "Palatino Linotype", "Book Antiqua", "Palatino", serif;
+}
