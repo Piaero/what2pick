@@ -1,39 +1,54 @@
 .grid-picks {
-    display: grid;
-    width: 80%;
-    grid-template-columns: 0.4fr 0.8fr 0.8fr 1fr;
-    grid-column-gap: 25px;
-    grid-gap: 20px;
-    padding-right: 15px;
-    padding-left: 15px;
-    margin-right: auto;
-    margin-left: auto;
-  }
+  display: grid;
+  width: 80%;
+  grid-template-columns: 0.4fr 0.8fr 0.8fr 1fr;
+  grid-column-gap: 25px;
+  grid-gap: 20px;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
 
-  .grid-column {
-    display: grid;
-    background-color: lightgray;
-    width: 100%;
-    grid-gap: 10px;
-    grid-template-rows: 0.5fr repeat(6, 1fr);
-  }
+.grid-column {
+  display: grid;
+  background-color: lightgray;
+  width: 100%;
+  grid-gap: 10px;
+  grid-template-rows: 0.5fr repeat(6, 1fr);
+}
 
-  .sugestions-column {
-    display: grid;
-    background-color: lightgray;
-    grid-gap: 10px;
-    grid-template-rows: 0.5fr repeat(3, 1fr) 0.5fr repeat(3, 1fr);
-  }
-  
-  .grid-picks__title {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+.sugestions-column {
+  display: grid;
+  background-color: lightgray;
+  grid-gap: 10px;
+  grid-template-rows: 0.5fr repeat(3, 1fr) 0.5fr repeat(3, 1fr);
+}
 
-  .sugestions-column {
-    display: grid;
-    background-color: lightgray;
-    grid-gap: 10px;
-    grid-template-rows: 0.5fr repeat(3, 1fr) 0.5fr repeat(3, 1fr);
-  }
+.grid-picks__title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.sugestions-column {
+  display: grid;
+  background-color: lightgray;
+  grid-gap: 10px;
+  grid-template-rows: 0.5fr repeat(3, 1fr) 0.5fr repeat(3, 1fr);
+}
+
+.role-icon {
+  width: 80px;
+  vertical-align: middle;
+}
+
+.inactive {
+  opacity: 0.4;
+  filter: grayscale(100%);
+}
+
+.active {
+  opacity: 1;
+  filter: grayscale(0%);
+}

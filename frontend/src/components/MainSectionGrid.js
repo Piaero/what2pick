@@ -1,19 +1,15 @@
 import React from 'react';
 import './MainSectionGrid.css';
 
+import { ColumnYourRole } from './ColumnYourRole.js';
+
 export class MainSectionGrid extends React.Component {
     render() {
         return (
             <section className="grid-picks">
 
                 <div className="grid-column">
-                    <h2 className="grid-picks__title your-role">Select Your Role (component)</h2>
-                    <div>1</div>
-                    <div>2</div>
-                    <div>3</div>
-                    <div>4</div>
-                    <div>5</div>
-                    <div>empty</div>
+                    <ColumnYourRole />
                 </div>
 
                 <div className="grid-column">

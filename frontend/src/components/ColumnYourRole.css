@@ -1,0 +1,14 @@
+p {
+    margin-top: -7px;
+}
+
+.your-role-champion {
+    text-align: center;
+    font-weight: bold;
+  }
+
+.your-role-champion:hover {
+    opacity: 1;
+    filter: grayscale(0%);
+    cursor: pointer;
+}
