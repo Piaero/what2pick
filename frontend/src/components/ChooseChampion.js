@@ -9,8 +9,8 @@ export class ChooseChampion extends React.Component {
         return (
             <div className="choose-champion-container">
 
-                <div className="role-and-caption">
-                    <img className="role-icon inactive" src={require(`../assets/images/${this.props.lane}_icon.png`)} alt={this.props.lane} />
+                <div className="role-and-caption inactive">
+                    <img className="role-icon" src={require(`../assets/images/${this.props.lane}_icon.png`)} alt={this.props.lane} />
                     <span className="role-caption">{this.props.lane}</span>
                 </div>
 

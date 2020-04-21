@@ -22,7 +22,7 @@
 }
 
 .choose-champion-icon:hover,
-.role-icon:hover {
+.role-and-caption:hover {
     opacity: 1;
     filter: grayscale(0%);
     cursor: pointer;
