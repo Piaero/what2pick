@@ -1,13 +1,13 @@
-p {
+.role-caption {
     margin-top: -7px;
+    font-weight: bold;
 }
 
-.your-role-champion {
+.role-container {
     text-align: center;
-    font-weight: bold;
   }
 
-.your-role-champion:hover {
+.role-container:hover {
     opacity: 1;
     filter: grayscale(0%);
     cursor: pointer;

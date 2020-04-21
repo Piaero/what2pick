@@ -1,0 +1,58 @@
+.choose-champion-container {
+    display: flex;
+}
+
+.role-caption,
+.champion-caption,
+.choose-champion-caption {
+    display: block;
+    text-align: center;
+}
+
+.champion-icon-and-caption {
+    display: block;
+    text-align: center;
+}
+
+.choose-champion-icon {
+    width: 30px;
+    margin-top: 15px;
+    opacity: 0.8    ;
+    filter: grayscale(0%);
+}
+
+.choose-champion-icon:hover,
+.role-icon:hover {
+    opacity: 1;
+    filter: grayscale(0%);
+    cursor: pointer;
+}
+
+.choose-champion-caption {
+    font-size: 10px;
+    margin-top: 10px;
+}
+
+.search-container {
+    margin-top: 30px;
+    margin-left: 10px;
+}
+
+.search-button {
+    margin-right: -1px;
+}
+
+.search-icon {
+    width: 11px;
+}
+
+/* this is used later when champion appears */
+.champion-avatar {
+    width: 75px;
+    height: 75px;
+    margin-left: 10px;
+}
+
+.champion-caption {
+    margin: -6px;
+}

@@ -2,6 +2,7 @@ import React from 'react';
 import './MainSectionGrid.css';
 
 import { ColumnYourRole } from './ColumnYourRole.js';
+import { ChooseChampion } from './ChooseChampion';
 
 export class MainSectionGrid extends React.Component {
     render() {
@@ -14,8 +15,8 @@ export class MainSectionGrid extends React.Component {
 
                 <div className="grid-column">
                     <h2 className="grid-picks__title">Your Team Column (component)</h2>
-                    <div>1</div>
-                    <div>2</div>
+                    <div><ChooseChampion lane="Top"/></div>
+                    <div><ChooseChampion lane="Bottom"/></div>
                     <div>3</div>
                     <div>4</div>
                     <div>5</div>
