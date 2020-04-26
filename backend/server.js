@@ -11,14 +11,26 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // MongoDB Database
-MongoClient.connect(process.env.MONGODB_URI, {
-    useUnifiedTopology: true
-  })
-  .then(client => {
-    console.log('Connected to Database')
-    const db = client.db('what2pick')
-    const countersCollection = db.collection('counters')
-  })
+const client = new MongoClient(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true }, );
+
+client.connect(err => {
+  if (err) throw err;
+  const db = client.db('what2pick')
+  const countersCollection = db.collection("champions");
+  console.log('connected to Database')
+});
+
+app.get('/champions-list', (req, res) => {
+  MongoClient.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true }, function (err, db) {
+    if (err) throw err;
+    var database = db.db("what2pick");
+    database.collection("champions").distinct("name", function (err, result) {
+      if (err) throw err;
+      res.json(result);
+      db.close();
+    });
+  });
+});
 
 if (process.env.NODE_ENV === 'production') {
   // Serve any static files

@@ -9,19 +9,20 @@
     text-align: center;
 }
 
-.champion-icon-and-caption {
+.champion-avatar-and-caption {
     display: block;
     text-align: center;
 }
 
-.choose-champion-icon {
-    width: 30px;
-    margin-top: 15px;
-    opacity: 0.8    ;
-    filter: grayscale(0%);
+.champion-avatar {
+    width: 70px;
+    margin-top: 5px;
 }
 
-.choose-champion-icon:hover,
+.champion-avatar-other {
+    margin-top: 10px;
+}
+
 .role-and-caption:hover {
     opacity: 1;
     filter: grayscale(0%);
@@ -44,15 +45,4 @@
 
 .search-icon {
     width: 11px;
-}
-
-/* this is used later when champion appears */
-.champion-avatar {
-    width: 75px;
-    height: 75px;
-    margin-left: 10px;
-}
-
-.champion-caption {
-    margin: -6px;
 }
