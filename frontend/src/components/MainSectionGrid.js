@@ -43,10 +43,7 @@ export class MainSectionGrid extends React.Component {
                     <div className="sugestion-entry">2</div>
                     <div className="sugestion-entry">3</div>
                 </div>
-
-
-
-
+                
             </section>
         )
     };

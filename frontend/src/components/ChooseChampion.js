@@ -70,9 +70,9 @@ export class ChooseChampion extends React.Component {
             });
         } else {
             const input = event.currentTarget.value;
-            const filteredUsers = this.getFilteredChampion(input)
+            const filteredChampion = this.getFilteredChampion(input)
             this.setState({
-                championSelected: filteredUsers
+                championSelected: filteredChampion
             });
         }
     }
