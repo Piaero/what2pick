@@ -8,7 +8,7 @@ const ChampionAvatar = ({ currentChampion, championsList }) => {
     if (championsList.includes(currentChampion)) {
         return (
             <div>
-                <img className="champion-avatar" src={require(`../assets/images/champions/${currentChampion}Square.png`)} alt={currentChampion} />
+                <img className="champion-avatar" src={require(`../assets/images/champions/${currentChampion.replace(" ", "_")}Square.png`)} alt={currentChampion} />
             </div>
         )
     } else if (currentChampion === "Wrong name!") {
