@@ -74,6 +74,7 @@ export class ChooseChampion extends React.Component {
             this.setState({
                 championSelected: filteredChampion
             });
+            this.props.handleTeammateChampionChange("top", filteredChampion)
         }
     }
 

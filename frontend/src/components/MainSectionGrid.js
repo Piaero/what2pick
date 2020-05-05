@@ -30,13 +30,20 @@ export class MainSectionGrid extends React.Component {
         }
 
         this.handleMyRoleChange = this.handleMyRoleChange.bind(this);
+        this.handleTeammateChampionChange = this.handleTeammateChampionChange.bind(this);
     }
 
     handleMyRoleChange(role) {
         this.setState({ selections: { myRole: role } })
         // Need to remove these developer logs
         console.log(`just clicked on ${role}`)
-        console.log(`state is now: ${this.state.selections.myRole}`)
+        console.log(`myRole is now: ${this.state.selections.myRole}`)
+    }
+
+    handleTeammateChampionChange(lane, champion) {
+        this.setState({ selections: { teammates : { [lane] : champion} } })
+        console.log(`Direct input: my ${lane} champion is now: ${champion}`)
+        console.log(`State entry: my ${lane} champion is now: ${this.state.selections.teammates[lane]}`)
     }
 
     render() {
@@ -49,12 +56,12 @@ export class MainSectionGrid extends React.Component {
 
                 <div className="grid-column">
                     <h2 className="grid-picks__title">Your Team Column (component)</h2>
-                    <div><ChooseChampion lane="Top" /></div>
-                    <div><ChooseChampion lane="Jungle" /></div>
-                    <div><ChooseChampion lane="Middle" /></div>
-                    <div><ChooseChampion lane="Bottom" /></div>
-                    <div><ChooseChampion lane="Support" /></div>
-                    <div><ChooseChampion lane="Unknown" /></div>
+                    <div><ChooseChampion lane="Top" handleTeammateChampionChange={this.handleTeammateChampionChange}/></div>
+                    <div><ChooseChampion lane="Jungle" handleTeammateChampionChange={this.handleTeammateChampionChange}/></div>
+                    <div><ChooseChampion lane="Middle" handleTeammateChampionChange={this.handleTeammateChampionChange}/></div>
+                    <div><ChooseChampion lane="Bottom" handleTeammateChampionChange={this.handleTeammateChampionChange}/></div>
+                    <div><ChooseChampion lane="Support" handleTeammateChampionChange={this.handleTeammateChampionChange}/></div>
+                    <div><ChooseChampion lane="Unknown" handleTeammateChampionChange={this.handleTeammateChampionChange}/></div>
                 </div>
 
                 <div className="grid-column">
