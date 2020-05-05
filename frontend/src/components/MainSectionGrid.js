@@ -16,11 +16,11 @@ export class MainSectionGrid extends React.Component {
                 <div className="grid-column">
                     <h2 className="grid-picks__title">Your Team Column (component)</h2>
                     <div><ChooseChampion lane="Top"/></div>
+                    <div><ChooseChampion lane="Jungle"/></div>
+                    <div><ChooseChampion lane="Middle"/></div>
                     <div><ChooseChampion lane="Bottom"/></div>
-                    <div>3</div>
-                    <div>4</div>
-                    <div>5</div>
-                    <div>6</div>
+                    <div><ChooseChampion lane="Support"/></div>
+                    <div><ChooseChampion lane="Unknown"/></div>
                 </div>
 
                 <div className="grid-column">
