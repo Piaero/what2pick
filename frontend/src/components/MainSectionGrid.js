@@ -5,22 +5,56 @@ import { ColumnYourRole } from './ColumnYourRole.js';
 import { ChooseChampion } from './ChooseChampion';
 
 export class MainSectionGrid extends React.Component {
+    constructor() {
+        super();
+        this.state = {
+            selections: {
+                myRole: "none",
+                teammates: {
+                    top: "none",
+                    jungle: "none",
+                    middle: "none",
+                    bottom: "none",
+                    support: "none",
+                    unknown: "none"
+                },
+                enemies: {
+                    top: "none",
+                    jungle: "none",
+                    middle: "none",
+                    bottom: "none",
+                    support: "none",
+                    unknown: "none"
+                }
+            }
+        }
+
+        this.handleMyRoleChange = this.handleMyRoleChange.bind(this);
+    }
+
+    handleMyRoleChange(role) {
+        this.setState({ selections: { myRole: role } })
+        // Need to remove these developer logs
+        console.log(`just clicked on ${role}`)
+        console.log(`state is now: ${this.state.selections.myRole}`)
+    }
+
     render() {
         return (
             <section className="grid-picks">
 
                 <div className="grid-column">
-                    <ColumnYourRole />
+                    <ColumnYourRole handleMyRoleChange={this.handleMyRoleChange}/>
                 </div>
 
                 <div className="grid-column">
                     <h2 className="grid-picks__title">Your Team Column (component)</h2>
-                    <div><ChooseChampion lane="Top"/></div>
-                    <div><ChooseChampion lane="Jungle"/></div>
-                    <div><ChooseChampion lane="Middle"/></div>
-                    <div><ChooseChampion lane="Bottom"/></div>
-                    <div><ChooseChampion lane="Support"/></div>
-                    <div><ChooseChampion lane="Unknown"/></div>
+                    <div><ChooseChampion lane="Top" /></div>
+                    <div><ChooseChampion lane="Jungle" /></div>
+                    <div><ChooseChampion lane="Middle" /></div>
+                    <div><ChooseChampion lane="Bottom" /></div>
+                    <div><ChooseChampion lane="Support" /></div>
+                    <div><ChooseChampion lane="Unknown" /></div>
                 </div>
 
                 <div className="grid-column">
@@ -43,7 +77,7 @@ export class MainSectionGrid extends React.Component {
                     <div className="sugestion-entry">2</div>
                     <div className="sugestion-entry">3</div>
                 </div>
-                
+
             </section>
         )
     };

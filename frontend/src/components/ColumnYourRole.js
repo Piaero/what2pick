@@ -12,20 +12,25 @@ export class ColumnYourRole extends React.Component {
         return (
             <React.Fragment>
                 <h2 className="grid-picks__title">Select Your Role</h2>
-                <div className="role-container inactive"><img src={Top} alt="Top" className="role-icon" />
-                <span className="role-caption">Top</span>
+                <div className="role-container inactive" onClick={e => this.props.handleMyRoleChange("Top")}>
+                    <img src={Top} alt="Top" className="role-icon" />
+                    <span className="role-caption">Top</span>
                 </div>
-                <div className="role-container inactive"><img src={Jungle} alt="Jungle" className="role-icon" />
-                <span className="role-caption">Jungle</span>
+                <div className="role-container inactive" onClick={e => this.props.handleMyRoleChange("Jungle")}>
+                    <img src={Jungle} alt="Jungle" className="role-icon" />
+                    <span className="role-caption">Jungle</span>
                 </div>
-                <div className="role-container inactive"><img src={Middle} alt="Middle" className="role-icon" />
-                <span className="role-caption">Middle</span>
+                <div className="role-container inactive" onClick={e => this.props.handleMyRoleChange("Middle")}>
+                    <img src={Middle} alt="Middle" className="role-icon" />
+                    <span className="role-caption">Middle</span>
                 </div>
-                <div className="role-container inactive"><img src={Bottom} alt="Bottom" className="role-icon" />
-                <span className="role-caption">Bottom</span>
+                <div className="role-container inactive" onClick={e => this.props.handleMyRoleChange("Bottom")}>
+                    <img src={Bottom} alt="Bottom" className="role-icon" />
+                    <span className="role-caption">Bottom</span>
                 </div>
-                <div className="role-container inactive"><img src={Support} alt="Support" className="role-icon" />
-                <span className="role-caption">Support</span>
+                <div className="role-container inactive" onClick={e => this.props.handleMyRoleChange("Support")}>
+                    <img src={Support} alt="Support" className="role-icon" />
+                    <span className="role-caption">Support</span>
                 </div>
             </React.Fragment>
         )
