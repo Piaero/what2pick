@@ -42,7 +42,6 @@ export class MainSectionGrid extends React.Component {
 
     handleTeammateChampionChange(lane, champion) {
         this.setState({ selections: { teammates : { [lane] : champion} } })
-        console.log(`Direct input: my ${lane} champion is now: ${champion}`)
         console.log(`State entry: my ${lane} champion is now: ${this.state.selections.teammates[lane]}`)
     }
 
