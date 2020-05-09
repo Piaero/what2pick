@@ -31,6 +31,7 @@ export class MainSectionGrid extends React.Component {
 
         this.handleMyRoleChange = this.handleMyRoleChange.bind(this);
         this.handleTeammateChampionChange = this.handleTeammateChampionChange.bind(this);
+        this.handleEnemyChampionChange = this.handleEnemyChampionChange.bind(this);
     }
 
     handleMyRoleChange(role) {
@@ -40,9 +41,16 @@ export class MainSectionGrid extends React.Component {
         console.log(`myRole is now: ${this.state.selections.myRole}`)
     }
 
+
+    // These functions are separed because of strange bug. When there was inputted teammate champion, inputing an enemey champion would cause an error: "cannot read properdy "top" of undefined"
     handleTeammateChampionChange(lane, champion) {
-        this.setState({ selections: { teammates : { [lane] : champion} } })
+        this.setState({ selections: { teammates: { [lane]: champion } } })
         console.log(`State entry: my ${lane} champion is now: ${this.state.selections.teammates[lane]}`)
+    }
+
+    handleEnemyChampionChange(lane, champion) {
+        this.setState({ selections: { teammates: { [lane]: champion } } })
+        console.log(`State entry: enemy ${lane} champion is now: ${this.state.selections.teammates[lane]}`)
     }
 
     render() {
@@ -50,27 +58,27 @@ export class MainSectionGrid extends React.Component {
             <section className="grid-picks">
 
                 <div className="grid-column">
-                    <ColumnYourRole handleMyRoleChange={this.handleMyRoleChange}/>
+                    <ColumnYourRole handleMyRoleChange={this.handleMyRoleChange} />
                 </div>
 
                 <div className="grid-column">
-                    <h2 className="grid-picks__title">Your Team Column (component)</h2>
-                    <div><ChooseChampion lane="Top" handleTeammateChampionChange={this.handleTeammateChampionChange}/></div>
-                    <div><ChooseChampion lane="Jungle" handleTeammateChampionChange={this.handleTeammateChampionChange}/></div>
-                    <div><ChooseChampion lane="Middle" handleTeammateChampionChange={this.handleTeammateChampionChange}/></div>
-                    <div><ChooseChampion lane="Bottom" handleTeammateChampionChange={this.handleTeammateChampionChange}/></div>
-                    <div><ChooseChampion lane="Support" handleTeammateChampionChange={this.handleTeammateChampionChange}/></div>
-                    <div><ChooseChampion lane="Unknown" handleTeammateChampionChange={this.handleTeammateChampionChange}/></div>
+                    <h2 className="grid-picks__title">Your Team Column</h2>
+                    <div><ChooseChampion lane="Top" handleTeammateChampionChange={this.handleTeammateChampionChange} team="teammate" /></div>
+                    <div><ChooseChampion lane="Jungle" handleTeammateChampionChange={this.handleTeammateChampionChange} team="teammate" /></div>
+                    <div><ChooseChampion lane="Middle" handleTeammateChampionChange={this.handleTeammateChampionChange} team="teammate" /></div>
+                    <div><ChooseChampion lane="Bottom" handleTeammateChampionChange={this.handleTeammateChampionChange} team="teammate" /></div>
+                    <div><ChooseChampion lane="Support" handleTeammateChampionChange={this.handleTeammateChampionChange} team="teammate" /></div>
+                    <div><ChooseChampion lane="Unknown" handleTeammateChampionChange={this.handleTeammateChampionChange} team="teammate" /></div>
                 </div>
 
                 <div className="grid-column">
-                    <h2 className="grid-picks__title">Enemy Team Column (component)</h2>
-                    <div>1</div>
-                    <div>2</div>
-                    <div>3</div>
-                    <div>4</div>
-                    <div>5</div>
-                    <div>6</div>
+                    <h2 className="grid-picks__title">Enemy Team Column</h2>
+                    <div><ChooseChampion lane="Top" handleEnemyChampionChange={this.handleEnemyChampionChange} team="enemy" /></div>
+                    <div><ChooseChampion lane="Jungle" handleEnemyChampionChange={this.handleEnemyChampionChange} team="enemy" /></div>
+                    <div><ChooseChampion lane="Middle" handleEnemyChampionChange={this.handleEnemyChampionChange} team="enemy" /></div>
+                    <div><ChooseChampion lane="Bottom" handleEnemyChampionChange={this.handleEnemyChampionChange} team="enemy" /></div>
+                    <div><ChooseChampion lane="Support" handleEnemyChampionChange={this.handleEnemyChampionChange} team="enemy" /></div>
+                    <div><ChooseChampion lane="Unknown" handleEnemyChampionChange={this.handleEnemyChampionChange} team="enemy" /></div>
                 </div>
 
                 <div className="sugestions-column">

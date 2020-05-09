@@ -74,7 +74,11 @@ export class ChooseChampion extends React.Component {
             this.setState({
                 championSelected: filteredChampion
             });
-            this.props.handleTeammateChampionChange(this.props.lane.toLowerCase(), filteredChampion)
+            if (this.props.team === "teammate") {
+                this.props.handleTeammateChampionChange(this.props.lane.toLowerCase(), filteredChampion)
+            } else if (this.props.team === "enemy") {
+                this.props.handleEnemyChampionChange(this.props.lane.toLowerCase(), filteredChampion)
+            }
         }
     }
 
@@ -103,7 +107,7 @@ export class ChooseChampion extends React.Component {
 
                 <div className="search-container">
                     <button type="submit" className="search-button"><img src={SearchIcon} className="search-icon" alt="Search" /></button>
-                    <input type="text" placeholder="Find champion..." name="search" onInput={this.onInputHandler} />
+                    <input type="text" placeholder="Find champion..." name="search" onChange={this.onInputHandler} />
                 </div>
             </div>
         )
