@@ -26,12 +26,47 @@ export class MainSectionGrid extends React.Component {
                     support: "none",
                     unknown: "none"
                 }
-            }
+            },
+            suggestions: "none",
         }
 
         this.handleMyRoleChange = this.handleMyRoleChange.bind(this);
         this.handleTeammateChampionChange = this.handleTeammateChampionChange.bind(this);
         this.handleEnemyChampionChange = this.handleEnemyChampionChange.bind(this);
+    }
+
+    componentDidMount() {
+        this.getChampionsList();
+    }
+
+    getChampionsList = () => {
+        fetch('/champions-list')
+            .then(res => res.json())
+            .then(champions => this.setState({ championsList: champions }))
+    }
+
+    componentDidUpdate() {
+        this.sendSelectedChampions();
+    }
+
+    sendSelectedChampions = () => {
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            // body should be whole this.state.selections
+            body: JSON.stringify({ post: this.state.selections.myRole })
+        };
+
+        fetch('/selections', requestOptions)
+            .then(response => response.json())
+            .then(data => {
+                if (this.state.suggestions !== data) {
+                    this.setState({ suggestions: data })
+                }
+            }
+            )
+            // body should be whole this.state.selections
+            .then(console.log(`Just send POST request and myRole was ${this.state.selections.myRole}`));
     }
 
     handleMyRoleChange(role) {
@@ -58,6 +93,7 @@ export class MainSectionGrid extends React.Component {
             <section className="grid-picks">
 
                 <div className="grid-column">
+                    {this.state.suggestions}
                     <ColumnYourRole handleMyRoleChange={this.handleMyRoleChange} />
                 </div>
 
