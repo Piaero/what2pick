@@ -74,11 +74,8 @@ export class ChooseChampion extends React.Component {
             this.setState({
                 championSelected: filteredChampion
             });
-            if (this.props.team === "teammate") {
-                this.props.handleTeammateChampionChange(this.props.lane.toLowerCase(), filteredChampion)
-            } else if (this.props.team === "enemy") {
-                this.props.handleEnemyChampionChange(this.props.lane.toLowerCase(), filteredChampion)
-            }
+
+            this.props.handleChampionChange(this.props.lane.toLowerCase(), filteredChampion, this.props.team)
         }
     }
 
