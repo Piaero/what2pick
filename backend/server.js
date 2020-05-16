@@ -11,7 +11,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // MongoDB Database
-const client = new MongoClient(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true }, );
+const client = new MongoClient(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 client.connect(err => {
   if (err) throw err;
@@ -32,11 +32,11 @@ app.get('/champions-list', (req, res) => {
   });
 });
 
-app.post('/selections', (req, res) => {	
-  console.log(req.body);	
-  res.json(	
-    `I received your POST request. This is what you sent me: ${req.body.post}`,	
-  );	
+app.post('/selections', (req, res) => {
+  console.log(req.body);
+  res.json(
+    `I received your POST request. This is what you sent me: ${req.body.post}`,
+  );
 });
 
 if (process.env.NODE_ENV === 'production') {
