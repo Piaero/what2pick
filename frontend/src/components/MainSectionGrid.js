@@ -53,8 +53,7 @@ export class MainSectionGrid extends React.Component {
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            // body should be whole this.state.selections
-            body: JSON.stringify({ post: this.state.selections.myRole })
+            body: JSON.stringify({ post: this.state.selections })
         };
 
         fetch('/selections', requestOptions)
@@ -63,9 +62,7 @@ export class MainSectionGrid extends React.Component {
                 if (this.state.suggestions !== data) {
                     this.setState({ suggestions: data })
                 }
-            })
-            // body should be whole this.state.selections
-            .then(console.log(`Just send POST request and myRole was ${this.state.selections.myRole}`));
+            });
     }
 
     handleMyRoleChange(role) {
