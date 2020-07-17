@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
+const { dir } = require('console');
 const MongoClient = require('mongodb').MongoClient
 require('dotenv').config()
 
@@ -11,7 +12,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // MongoDB Database
-const client = new MongoClient(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+const uri = process.env.MONGODB_URI;
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 client.connect(err => {
   if (err) throw err;
@@ -21,7 +23,7 @@ client.connect(err => {
 });
 
 app.get('/champions-list', (req, res) => {
-  MongoClient.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true }, function (err, db) {
+  MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true }, function (err, db) {
     if (err) throw err;
     var database = db.db("what2pick");
     database.collection("champions").distinct("name", function (err, result) {
@@ -33,6 +35,31 @@ app.get('/champions-list', (req, res) => {
 });
 
 app.post('/selections', (req, res) => {
+  function getSuggestions() {
+    myRole = req.body.post.myRole
+    console.log(`my role is ${myRole}`)
+
+    championToCounter = req.body.post.enemy[myRole.toLowerCase()];
+    console.log(`championToCounter is ${championToCounter}`)
+
+    function getDirectCounters() {
+      var directCounters = 'No direct counters defined'
+      MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true }, function (err, db) {
+        db.db("what2pick").collection('champions', function (err, collection) {
+          collection.find({ name: championToCounter }).toArray(function (err, results) {
+            if (typeof myRole !== "undefined" && typeof championToCounter !== "undefined" && req.body.post.enemy[myRole.toLowerCase()] !== "none" && req.body.post.enemy[myRole.toLowerCase()] !== "Wrong name!") {
+              directCounters = results[0].counters[myRole];
+            }
+            db.close();
+          });
+        });
+      });
+      return directCounters;
+    }
+
+    return championToCounter;
+  }
+
   console.log(req.body);
   res.json(
     `I received your POST request. This is what you sent me: ${req.body.post}`,
