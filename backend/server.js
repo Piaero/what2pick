@@ -23,14 +23,9 @@ client.connect(err => {
 });
 
 app.get('/champions-list', (req, res) => {
-  MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true }, function (err, db) {
+  client.db("what2pick").collection('champions').distinct("name", function (err, result) {
     if (err) throw err;
-    var database = db.db("what2pick");
-    database.collection("champions").distinct("name", function (err, result) {
-      if (err) throw err;
-      res.json(result);
-      db.close();
-    });
+    res.json(result);
   });
 });
 
@@ -38,10 +33,10 @@ app.post('/selections', (req, res) => {
   var myRole = req.body.post.myRole
   championToCounter = req.body.post.enemy[myRole.toLowerCase()];
 
-  client.db("what2pick").collection('champions').find({name: championToCounter}).toArray()
+  client.db("what2pick").collection('champions').find({ name: championToCounter }).toArray()
     .then(results => {
       if (typeof myRole !== "undefined" && typeof championToCounter !== "undefined" && championToCounter !== "none" && championToCounter !== "Wrong name!") {
-        if (typeof results[0].counters[myRole] !== "undefined") {          
+        if (typeof results[0].counters[myRole] !== "undefined") {
           console.log(results[0].counters)
           console.log(results[0].counters[myRole])
           res.json(`${results[0].counters[myRole]}`)
@@ -52,7 +47,7 @@ app.post('/selections', (req, res) => {
       }
     })
     .catch(error => console.error(error))
-  })
+})
 
 if (process.env.NODE_ENV === 'production') {
   // Serve any static files
