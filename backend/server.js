@@ -44,6 +44,8 @@ app.post('/selections', (req, res) => {
           console.log(`${championToCounter} has no counters on ${myRole}`)
           res.json(`This champion has no counters`)
         }
+      } else {
+        res.json(`No counter due to not enough input parameters`)
       }
     })
     .catch(error => console.error(error))
