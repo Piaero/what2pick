@@ -35,36 +35,24 @@ app.get('/champions-list', (req, res) => {
 });
 
 app.post('/selections', (req, res) => {
-  function getSuggestions() {
-    myRole = req.body.post.myRole
-    console.log(`my role is ${myRole}`)
+  var myRole = req.body.post.myRole
+  championToCounter = req.body.post.enemy[myRole.toLowerCase()];
 
-    championToCounter = req.body.post.enemy[myRole.toLowerCase()];
-    console.log(`championToCounter is ${championToCounter}`)
-
-    function getDirectCounters() {
-      var directCounters = 'No direct counters defined'
-      MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true }, function (err, db) {
-        db.db("what2pick").collection('champions', function (err, collection) {
-          collection.find({ name: championToCounter }).toArray(function (err, results) {
-            if (typeof myRole !== "undefined" && typeof championToCounter !== "undefined" && req.body.post.enemy[myRole.toLowerCase()] !== "none" && req.body.post.enemy[myRole.toLowerCase()] !== "Wrong name!") {
-              directCounters = results[0].counters[myRole];
-            }
-            db.close();
-          });
-        });
-      });
-      return directCounters;
-    }
-
-    return championToCounter;
-  }
-
-  console.log(req.body);
-  res.json(
-    `I received your POST request. This is what you sent me: ${req.body.post}`,
-  );
-});
+  client.db("what2pick").collection('champions').find({name: championToCounter}).toArray()
+    .then(results => {
+      if (typeof myRole !== "undefined" && typeof championToCounter !== "undefined" && championToCounter !== "none" && championToCounter !== "Wrong name!") {
+        if (typeof results[0].counters[myRole] !== "undefined") {          
+          console.log(results[0].counters)
+          console.log(results[0].counters[myRole])
+          res.json(`${results[0].counters[myRole]}`)
+        } else {
+          console.log(`${championToCounter} has no counters on ${myRole}`)
+          res.json(`This champion has no counters`)
+        }
+      }
+    })
+    .catch(error => console.error(error))
+  })
 
 if (process.env.NODE_ENV === 'production') {
   // Serve any static files

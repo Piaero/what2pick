@@ -47,6 +47,7 @@ export class MainSectionGrid extends React.Component {
 
     componentDidUpdate() {
         this.sendSelectedChampions();
+        console.log(this.state) // to delete later
     }
 
     sendSelectedChampions = () => {
@@ -98,7 +99,6 @@ export class MainSectionGrid extends React.Component {
             <section className="grid-picks">
 
                 <div className="grid-column">
-                    {this.state.suggestions}
                     <ColumnYourRole handleMyRoleChange={this.handleMyRoleChange} />
                 </div>
 
@@ -124,7 +124,7 @@ export class MainSectionGrid extends React.Component {
 
                 <div className="sugestions-column">
                     <div className="grid-picks__title"><h2>Best counters for Selected Your Role:</h2></div>
-                    <div className="sugestion-entry">1</div>
+                    <div className="sugestion-entry">{this.state.suggestions}</div>
                     <div className="sugestion-entry">2</div>
                     <div className="sugestion-entry">3</div>
                     <div className="grid-picks__title"><h2>Avoid to pick</h2></div>
