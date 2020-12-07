@@ -5,3 +5,4 @@
 
 # Atlas Database connection string. Contains user and passowrd!
 .env
+frontend/debug.log

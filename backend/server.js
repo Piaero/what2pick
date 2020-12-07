@@ -29,26 +29,65 @@ app.get('/champions-list', (req, res) => {
   });
 });
 
-app.post('/selections', (req, res) => {
+// BUG: After updating state in main section grid, it sends 2 requests to server
+app.post('/selections', async (req, res) => {
   var myRole = req.body.post.myRole
   championToCounter = req.body.post.enemy[myRole.toLowerCase()];
 
-  client.db("what2pick").collection('champions').find({ name: championToCounter }).toArray()
-    .then(results => {
-      if (typeof myRole !== "undefined" && typeof championToCounter !== "undefined" && championToCounter !== "none" && championToCounter !== "Wrong name!") {
-        if (typeof results[0].counters[myRole] !== "undefined") {
-          console.log(results[0].counters)
-          console.log(results[0].counters[myRole])
-          res.json(`${results[0].counters[myRole]}`)
-        } else {
-          console.log(`${championToCounter} has no counters on ${myRole}`)
-          res.json(`This champion has no counters`)
-        }
-      } else {
-        res.json(`No counter due to not enough input parameters`)
+  let CounterOnLaneMultiplier = 1;
+  let CounterOtherChampionsMultiplier = 0.8;
+  let synergyWithTeammatesMultiplier = 0.45;
+
+  // need to decide wheather these should be an object or array
+  let CounterOnLane = [];
+  var CounterOtherChampions = [];
+  let synergyWithTeammates = [];
+
+  let BestCounters = [];
+
+  let lanes = ["Top", "Jungle", "Middle", "Bottom", "Support", "Unknown"];
+
+  console.log(`--------BEGGINING OF NEW LOG----------`)
+  try {
+    for (let i = 0; i < lanes.length; i++) {
+      let enemyFromLane = req.body.post.enemy[lanes[i].toLowerCase()]
+      console.log(enemyFromLane)
+
+      if (enemyFromLane !== 'undefined' && enemyFromLane !== "none") {
+        await client.db("what2pick").collection('champions').find({ name: enemyFromLane }).toArray()
+          .then(results => {
+
+            // Inputting counters from champions from all lanes other than myRole (because there is different score multiplier)
+            if (lanes[i] !== myRole && results[0].counters[myRole] !== undefined) {
+
+              // Iterating trough all champions
+              for (let j = 0; j < results[0].counters[myRole].length; j++) {
+                console.log(`Added ${results[0].counters[myRole][j].counter} to CounterOtherChampions Array (from other lanes)`)
+                // console.log(results[0].counters[myRole][j])
+                CounterOtherChampions.push(results[0].counters[myRole][j].counter + " from " + results[0].name)
+              }
+              
+              // Inputting counters from champion from my lane (myRole)
+            } else if (results[0].counters[myRole] !== undefined) {
+              // Iterating trough all champions
+              for (let j = 0; j < results[0].counters[myRole].length; j++) {
+                console.log(`Added ${results[0].counters[myRole][j].counter} to CounterOtherChampions Array (from myRole lane)`)
+                // console.log(results[0].counters[myRole][j])
+                CounterOtherChampions.push(results[0].counters[myRole][j].counter + " from " + results[0].name)
+              }
+            }
+          })
+          .catch(error => console.error(error))
       }
-    })
-    .catch(error => console.error(error))
+    }
+    console.log(`BELOW CounterOtherChampions`)
+    console.log(CounterOtherChampions)
+    console.log(`ABOVE CounterOtherChampions`)
+
+    res.json(`${CounterOtherChampions}`)
+  } catch (error) {
+    console.log(error);
+  }
 })
 
 if (process.env.NODE_ENV === 'production') {
