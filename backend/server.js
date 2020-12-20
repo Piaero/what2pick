@@ -30,100 +30,149 @@ app.get('/champions-list', (req, res) => {
 });
 
 // BUG: After updating state in main section grid, it sends 2 requests to server
-// I am using here 3 kind of objects ontations, 2 types of arrays and one JS Object...
+// TODO: unify objects. I am using here 3 kind of objects notations, 2 types of arrays and one JS Object...
+
 app.post('/selections', async (req, res) => {
   var myRole = req.body.post.myRole
-  championToCounter = req.body.post.enemy[myRole.toLowerCase()];
 
   let counterOnLaneMultiplier = 1;
   let counterOtherChampionsMultiplier = 0.45;
   let synergyWithTeammatesMultiplier = 0.20;
 
-  // need to decide wheather these should be an object or array
-  let counterOnLane = [];
-  let counterOtherChampions = [];
-  let countersMerged = [];
+  let countersFromAllLanes = [];
+
+  let avoidToPickFromAllLanes = [];
+
   let synergyWithTeammates = [];
 
-  let bestCounters = {};
+  let bestCountersProposition = {};
 
   let lanes = ["Top", "Jungle", "Middle", "Bottom", "Support", "Unknown"];
 
-  console.log(`--------BEGGINING OF NEW LOG----------`)
+  let queryForAvoidToCounter = `counters.${myRole}.counter`
+  let projectionForAvoidToCounter = `counters.${myRole}.counter.$`
+
+  console.log(`------------------BEGGINING OF NEW LOG--------------------------`)
+
   try {
     for (let i = 0; i < lanes.length; i++) {
       let enemyFromLane = req.body.post.enemy[lanes[i].toLowerCase()]
       console.log(`--- Analising champion and his counters: ${enemyFromLane}`)
 
-      if (enemyFromLane !== 'undefined' && enemyFromLane !== "none") {
-        await client.db("what2pick").collection('champions').find({ name: enemyFromLane }).toArray()
-          .then(results => {
+      if (enemyFromLane !== 'undefined' && enemyFromLane !== "none" && enemyFromLane !== "Wrong name!") {
 
-            // Counters to Other Champions: Inputting counters from champions from all lanes other than myRole (because there is different score multiplier)
-            if (lanes[i] !== myRole && results[0].counters[myRole] !== undefined) {
-              // Iterating trough all champions
-              for (let j = 0; j < results[0].counters[myRole].length; j++) {
-                console.log(`Added ${results[0].counters[myRole][j].counter} to counterOtherChampions Array (from other lanes)`)
-                console.log(results[0].counters[myRole][j])
-                results[0].counters[myRole][j].score = results[0].counters[myRole][j].counterRate * counterOtherChampionsMultiplier;
-                results[0].counters[myRole][j].source = "COC";
-                results[0].counters[myRole][j].counterTo = { [enemyFromLane]: results[0].counters[myRole][j].counterRate };
-                counterOtherChampions.push(results[0].counters[myRole][j]);
-              }
+        // Counters to Other Champions: Inputting counters from champions from all lanes other than myRole (because there is different score multiplier)
+        if (lanes[i] !== myRole && myRole !== "none" && myRole !== undefined) {
 
-              // Counters On Lane: Inputting counters from champion from my lane (myRole)
-            } else if (results[0].counters[myRole] !== undefined) {
-              // Iterating trough all champions
-              for (let j = 0; j < results[0].counters[myRole].length; j++) {
-                console.log(`Added ${results[0].counters[myRole][j].counter} to counterOtherChampions Array (from myRole lane)`)
-                results[0].counters[myRole][j].score = results[0].counters[myRole][j].counterRate * counterOnLaneMultiplier;
-                results[0].counters[myRole][j].source = "COL";
-                results[0].counters[myRole][j].counterTo = { [enemyFromLane]: results[0].counters[myRole][j].counterRate };
-                counterOnLane.push(results[0].counters[myRole][j]);
+          //  I should use projection parameter to reduce results
+          await client.db("what2pick").collection('champions').find({ name: enemyFromLane }).toArray()
+            .then(results => {
+
+              if (results[0].counters[myRole] !== undefined) {
+                for (let j = 0; j < results[0].counters[myRole].length; j++) {
+                  results[0].counters[myRole][j].score = results[0].counters[myRole][j].counterRate * counterOtherChampionsMultiplier;
+                  results[0].counters[myRole][j].source = lanes[i];
+                  results[0].counters[myRole][j].counterTo = { [enemyFromLane]: results[0].counters[myRole][j].counterRate };
+                  countersFromAllLanes.push(results[0].counters[myRole][j]);
+                }
               }
-            }
-          })
-          .catch(error => console.error(error))
+            })
+            .catch(error => console.error(error))
+
+
+          // Avoid to pick propositions (!== myRole)
+          await client.db("what2pick").collection('champions').find({ [queryForAvoidToCounter]: enemyFromLane }).project({ [projectionForAvoidToCounter]: 1, name: 1 }).toArray()
+            .then(results => {
+              if (results.length !== 0) {
+                for (let j = 0; j < results.length; j++) {
+
+                  let championToPush = {}
+
+                  championToPush.name = results[j].name
+                  championToPush.score = results[j].counters[myRole][0].counterRate * counterOtherChampionsMultiplier
+                  championToPush.counterTo = { [enemyFromLane]: { counterRate: results[j].counters[myRole][0].counterRate, source: lanes[i] } }
+
+                  avoidToPickFromAllLanes.push(championToPush);
+                }
+              }
+            })
+            .catch(error => console.error(error))
+
+
+          // Counters On Lane: Inputting counters from champion from my lane (myRole)
+        } else if (myRole !== "none" && myRole !== undefined) {
+
+          //  I should use projection parameter to reduce results
+          await client.db("what2pick").collection('champions').find({ name: enemyFromLane }).toArray()
+            .then(results => {
+
+              if (results[0].counters[myRole] !== undefined) {
+                for (let j = 0; j < results[0].counters[myRole].length; j++) {
+                  results[0].counters[myRole][j].score = results[0].counters[myRole][j].counterRate * counterOnLaneMultiplier;
+                  results[0].counters[myRole][j].source = lanes[i];
+                  results[0].counters[myRole][j].counterTo = { [enemyFromLane]: results[0].counters[myRole][j].counterRate };
+                  countersFromAllLanes.push(results[0].counters[myRole][j]);
+                }
+              }
+            })
+            .catch(error => console.error(error))
+
+          // Avoid to pick propositions (myRole)
+          await client.db("what2pick").collection('champions').find({ [queryForAvoidToCounter]: enemyFromLane }).project({ [projectionForAvoidToCounter]: 1, name: 1 }).toArray()
+            .then(results => {
+              if (results.length !== 0) {
+                for (let j = 0; j < results.length; j++) {
+
+                  let championToPush = {}
+
+                  championToPush.name = results[j].name
+                  championToPush.score = results[j].counters[myRole][0].counterRate * counterOnLaneMultiplier
+                  championToPush.counterTo = { [enemyFromLane]: { counterRate: results[j].counters[myRole][0].counterRate, source: lanes[i] } }
+
+                  avoidToPickFromAllLanes.push(championToPush);
+                }
+              }
+            })
+            .catch(error => console.error(error))
+        }
       }
     } // end of populating counterOnLane and counterOtherChampions arrays
 
-    countersMerged = counterOnLane.concat(counterOtherChampions)
 
-    for (let i = 0; i < countersMerged.length; i++) {
-      if (bestCounters.hasOwnProperty(countersMerged[i].counter)) {
-        console.log(countersMerged[i].counter)
-        bestCounters[countersMerged[i].counter].score += countersMerged[i].score
-        bestCounters[countersMerged[i].counter].counterTo[Object.keys(countersMerged[i].counterTo)[0]] = {
-          counterRate: countersMerged[i].counterRate,
-          source: countersMerged[i].source
+    // Merge counters into one
+    for (let i = 0; i < countersFromAllLanes.length; i++) {
+      if (bestCountersProposition.hasOwnProperty(countersFromAllLanes[i].counter)) {
+        // console.log(countersMerged[i].counter)
+        bestCountersProposition[countersFromAllLanes[i].counter].score += countersFromAllLanes[i].score
+        bestCountersProposition[countersFromAllLanes[i].counter].counterTo[Object.keys(countersFromAllLanes[i].counterTo)[0]] = {
+          counterRate: countersFromAllLanes[i].counterRate,
+          source: countersFromAllLanes[i].source
         }
 
       } else {
-        bestCounters[countersMerged[i].counter] = {
-          score: countersMerged[i].score,
+        bestCountersProposition[countersFromAllLanes[i].counter] = {
+          score: countersFromAllLanes[i].score,
           counterTo: {
-            [Object.keys(countersMerged[i].counterTo)[0]]: {
-              counterRate: countersMerged[i].counterRate,
-              source: countersMerged[i].source
+            [Object.keys(countersFromAllLanes[i].counterTo)[0]]: {
+              counterRate: countersFromAllLanes[i].counterRate,
+              source: countersFromAllLanes[i].source
             }
           }
         }
       }
     }
 
-    let bestCountersorted = Object.entries(bestCounters).sort((a, b) => (a[1].score < b[1].score) ? 1 : -1);
+    // Merge avoid into one and adjust score of duplicates
 
-    console.log(`------------ BELOW countersMerged myRole is: ${myRole}`)
-    console.log(countersMerged)
-    console.log(`------------ ABOVE countersMerged`)
+    let bestCountersSorted = Object.entries(bestCountersProposition).sort((a, b) => (a[1].score < b[1].score) ? 1 : -1);
 
+    console.log(`------------------------TEST-------------------------------------`)
+    console.log(countersFromAllLanes)
+    // console.log(JSON.stringify(avoidToPick, null, " "))
+    console.log(`------------------------TEST-------------------------------------`)
 
-    console.log(`------------ BELOW bestCounters myRole is: ${myRole}`)
-    console.log(bestCountersorted)
-    console.log(`------------ ABOVE bestCounters`)
+    res.json(`${JSON.stringify(bestCountersSorted)}`)
 
-    res.json(`${JSON.stringify(bestCounters)}`)
-    
   } catch (error) {
     console.log(error);
   }
