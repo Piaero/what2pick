@@ -40,12 +40,13 @@ app.post('/selections', async (req, res) => {
   let synergyWithTeammatesMultiplier = 0.20;
 
   let countersFromAllLanes = [];
+  let CountersProposition = {};
 
   let avoidToPickFromAllLanes = [];
 
   let synergyWithTeammates = [];
 
-  let bestCountersProposition = {};
+
 
   let lanes = ["Top", "Jungle", "Middle", "Bottom", "Support", "Unknown"];
 
@@ -141,16 +142,15 @@ app.post('/selections', async (req, res) => {
 
     // Merge counters into one
     for (let i = 0; i < countersFromAllLanes.length; i++) {
-      if (bestCountersProposition.hasOwnProperty(countersFromAllLanes[i].counter)) {
-        // console.log(countersMerged[i].counter)
-        bestCountersProposition[countersFromAllLanes[i].counter].score += countersFromAllLanes[i].score
-        bestCountersProposition[countersFromAllLanes[i].counter].counterTo[Object.keys(countersFromAllLanes[i].counterTo)[0]] = {
+      if (CountersProposition.hasOwnProperty(countersFromAllLanes[i].counter)) {
+        CountersProposition[countersFromAllLanes[i].counter].score += countersFromAllLanes[i].score
+        CountersProposition[countersFromAllLanes[i].counter].counterTo[Object.keys(countersFromAllLanes[i].counterTo)[0]] = {
           counterRate: countersFromAllLanes[i].counterRate,
           source: countersFromAllLanes[i].source
         }
 
       } else {
-        bestCountersProposition[countersFromAllLanes[i].counter] = {
+        CountersProposition[countersFromAllLanes[i].counter] = {
           score: countersFromAllLanes[i].score,
           counterTo: {
             [Object.keys(countersFromAllLanes[i].counterTo)[0]]: {
@@ -162,13 +162,39 @@ app.post('/selections', async (req, res) => {
       }
     }
 
+    function mergeAvoidIntoSortableObject(array) {
+      let avoidToPickProposition = {};
+
+      for (let i = 0; i < array.length ; i++) {
+        if (avoidToPickProposition.hasOwnProperty(array[i].name)) {
+          avoidToPickProposition[array[i].name].score += array[i].score
+          avoidToPickProposition[array[i].name].counterTo[Object.keys(array[i].counterTo)[0]] = {
+            counterRate: array[i].counterTo[Object.keys(array[i].counterTo)[0]].counterRate,
+            source: array[i].counterTo[Object.keys(array[i].counterTo)[0]].source
+          }
+        } else {
+          avoidToPickProposition[array[i].name] = {
+            score: array[i].score,
+            counterTo: {
+              [Object.keys(array[i].counterTo)[0]]: {
+                counterRate: array[i].counterTo[Object.keys(array[i].counterTo)[0]].counterRate,
+                source: array[i].counterTo[Object.keys(array[i].counterTo)[0]].source
+              }
+            }
+          }
+        }
+      }
+
+      return avoidToPickProposition
+    }
+
     // Merge avoid into one and adjust score of duplicates
 
-    let bestCountersSorted = Object.entries(bestCountersProposition).sort((a, b) => (a[1].score < b[1].score) ? 1 : -1);
+    let bestCountersSorted = Object.entries(CountersProposition).sort((a, b) => (a[1].score < b[1].score) ? 1 : -1);
+    let bestAvoidSorted = Object.entries(mergeAvoidIntoSortableObject(avoidToPickFromAllLanes)).sort((a, b) => (a[1].score < b[1].score) ? 1 : -1);
 
     console.log(`------------------------TEST-------------------------------------`)
-    console.log(countersFromAllLanes)
-    // console.log(JSON.stringify(avoidToPick, null, " "))
+    console.log(JSON.stringify(bestAvoidSorted, null, " "))
     console.log(`------------------------TEST-------------------------------------`)
 
     res.json(`${JSON.stringify(bestCountersSorted)}`)
