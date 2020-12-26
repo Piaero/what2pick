@@ -58,6 +58,8 @@ app.post('/selections', async (req, res) => {
   try {
     for (let i = 0; i < lanes.length; i++) {
       let enemyFromLane = req.body.post.enemy[lanes[i].toLowerCase()]
+      let teammateFromLane = req.body.post.teammate[lanes[i].toLowerCase()]
+
       console.log(`--- Analising champion and his counters: ${enemyFromLane}`)
 
       if (enemyFromLane !== 'undefined' && enemyFromLane !== "none" && enemyFromLane !== "Wrong name!") {
@@ -99,7 +101,6 @@ app.post('/selections', async (req, res) => {
             })
             .catch(error => console.error(error))
 
-
           // Counters On Lane: Inputting counters from champion from my lane (myRole)
         } else if (myRole !== "none" && myRole !== undefined) {
 
@@ -137,7 +138,25 @@ app.post('/selections', async (req, res) => {
             .catch(error => console.error(error))
         }
       }
-    } // end of populating counterOnLane and counterOtherChampions arrays
+
+      // Get synergies for all lanes except myRole
+      await client.db("what2pick").collection('champions').find({ name: teammateFromLane }).project({ name: 1, synergies: 1 }).toArray()
+        .then(results => {
+          if (results[0] !== undefined && results[0].synergies.length !== 0 && lanes[i] !== myRole) {
+            for (let j = 0; j < results[0].synergies.length; j++) {
+              let championToPush = {}
+
+              championToPush.name = results[0].synergies[j].synergy
+              championToPush.score = results[0].synergies[j].synergyRate * synergyWithTeammatesMultiplier
+              championToPush.synergyTo = { [teammateFromLane]: { synergyRate: results[0].synergies[j].synergyRate, source: lanes[i] } }
+
+              synergyWithTeammates.push(championToPush);
+            }
+          }
+        })
+        .catch(error => console.error(error))
+
+    } // End of iterating trough all lanes
 
 
     // Merge counters into one
@@ -165,7 +184,7 @@ app.post('/selections', async (req, res) => {
     function mergeAvoidIntoSortableObject(array) {
       let avoidToPickProposition = {};
 
-      for (let i = 0; i < array.length ; i++) {
+      for (let i = 0; i < array.length; i++) {
         if (avoidToPickProposition.hasOwnProperty(array[i].name)) {
           avoidToPickProposition[array[i].name].score += array[i].score
           avoidToPickProposition[array[i].name].counterTo[Object.keys(array[i].counterTo)[0]] = {
@@ -194,7 +213,7 @@ app.post('/selections', async (req, res) => {
     let bestAvoidSorted = Object.entries(mergeAvoidIntoSortableObject(avoidToPickFromAllLanes)).sort((a, b) => (a[1].score < b[1].score) ? 1 : -1);
 
     console.log(`------------------------TEST-------------------------------------`)
-    console.log(JSON.stringify(bestAvoidSorted, null, " "))
+    console.log(JSON.stringify(synergyWithTeammates, null, " "))
     console.log(`------------------------TEST-------------------------------------`)
 
     res.json(`${JSON.stringify(bestCountersSorted)}`)
