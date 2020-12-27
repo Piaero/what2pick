@@ -159,7 +159,7 @@ app.post('/selections', async (req, res) => {
     } // End of iterating trough all lanes
 
 
-    // Merge counters into one
+    // Merge counters into one and create "SynergiesTo" key
     for (let i = 0; i < countersFromAllLanes.length; i++) {
       if (CountersProposition.hasOwnProperty(countersFromAllLanes[i].counter)) {
         CountersProposition[countersFromAllLanes[i].counter].score += countersFromAllLanes[i].score
@@ -167,6 +167,7 @@ app.post('/selections', async (req, res) => {
           counterRate: countersFromAllLanes[i].counterRate,
           source: countersFromAllLanes[i].source
         }
+        CountersProposition[countersFromAllLanes[i].counter].synergyTo = {}
 
       } else {
         CountersProposition[countersFromAllLanes[i].counter] = {
@@ -175,6 +176,28 @@ app.post('/selections', async (req, res) => {
             [Object.keys(countersFromAllLanes[i].counterTo)[0]]: {
               counterRate: countersFromAllLanes[i].counterRate,
               source: countersFromAllLanes[i].source
+            }
+          },
+          synergyTo: {}
+        }
+      }
+    }
+
+    // Merge Synergies with Counters
+    for (let i = 0; i < synergyWithTeammates.length; i++) {
+      if (CountersProposition.hasOwnProperty(synergyWithTeammates[i].name)) {
+        CountersProposition[synergyWithTeammates[i].name].score += synergyWithTeammates[i].score
+        CountersProposition[synergyWithTeammates[i].name].synergyTo[Object.keys(synergyWithTeammates[i].synergyTo)[0]] = {
+          synergyRate: synergyWithTeammates[i].synergyTo[Object.keys(synergyWithTeammates[i].synergyTo)[0]].synergyRate,
+          source: synergyWithTeammates[i].synergyTo[Object.keys(synergyWithTeammates[i].synergyTo)[0]].source
+        }
+      } else {
+        CountersProposition[synergyWithTeammates[i].name] = {
+          score: synergyWithTeammates[i].score,
+          synergyTo: {
+            [Object.keys(synergyWithTeammates[i].synergyTo)[0]]: {
+              synergyRate: synergyWithTeammates[i].synergyTo[Object.keys(synergyWithTeammates[i].synergyTo)[0]].synergyRate,
+              source: synergyWithTeammates[i].synergyTo[Object.keys(synergyWithTeammates[i].synergyTo)[0]].source
             }
           }
         }
@@ -212,8 +235,8 @@ app.post('/selections', async (req, res) => {
     let bestCountersSorted = Object.entries(CountersProposition).sort((a, b) => (a[1].score < b[1].score) ? 1 : -1);
     let bestAvoidSorted = Object.entries(mergeAvoidIntoSortableObject(avoidToPickFromAllLanes)).sort((a, b) => (a[1].score < b[1].score) ? 1 : -1);
 
-    console.log(`------------------------TEST-------------------------------------`)
-    console.log(JSON.stringify(synergyWithTeammates, null, " "))
+    console.log(`------------------------TEST-------------myRole is: ${myRole}----`)
+    console.log(JSON.stringify(bestCountersSorted, null, " "))
     console.log(`------------------------TEST-------------------------------------`)
 
     res.json(`${JSON.stringify(bestCountersSorted)}`)
