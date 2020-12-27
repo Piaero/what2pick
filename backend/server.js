@@ -41,19 +41,15 @@ app.post('/selections', async (req, res) => {
 
   let countersFromAllLanes = [];
   let CountersProposition = {};
-
   let avoidToPickFromAllLanes = [];
-
   let synergyWithTeammates = [];
-
-
 
   let lanes = ["Top", "Jungle", "Middle", "Bottom", "Support", "Unknown"];
 
   let queryForAvoidToCounter = `counters.${myRole}.counter`
   let projectionForAvoidToCounter = `counters.${myRole}.counter.$`
 
-  console.log(`------------------BEGGINING OF NEW LOG--------------------------`)
+  console.log(`------------------BEGGINING OF NEW LOG (app.post('/selections')--------------------------`)
 
   try {
     for (let i = 0; i < lanes.length; i++) {
@@ -232,14 +228,16 @@ app.post('/selections', async (req, res) => {
 
     // Merge avoid into one and adjust score of duplicates
 
-    let bestCountersSorted = Object.entries(CountersProposition).sort((a, b) => (a[1].score < b[1].score) ? 1 : -1);
-    let bestAvoidSorted = Object.entries(mergeAvoidIntoSortableObject(avoidToPickFromAllLanes)).sort((a, b) => (a[1].score < b[1].score) ? 1 : -1);
+    let response = {
+      bestCountersSorted: Object.entries(CountersProposition).sort((a, b) => (a[1].score < b[1].score) ? 1 : -1),
+      bestAvoidSorted: Object.entries(mergeAvoidIntoSortableObject(avoidToPickFromAllLanes)).sort((a, b) => (a[1].score < b[1].score) ? 1 : -1)
+    }
 
     console.log(`------------------------TEST-------------myRole is: ${myRole}----`)
-    console.log(JSON.stringify(bestCountersSorted, null, " "))
+    console.log(JSON.stringify(response, null, " "))
     console.log(`------------------------TEST-------------------------------------`)
 
-    res.json(`${JSON.stringify(bestCountersSorted)}`)
+    res.json(`${response}`)
 
   } catch (error) {
     console.log(error);
