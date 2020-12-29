@@ -42,25 +42,15 @@ const ChampionCaption = ({ currentChampion, championsList }) => {
 };
 
 export class ChooseChampion extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             championSelected: "Choose champion",
-            championsList: []
+            championsList: this.props.championsList,
         };
 
         this.onInputHandler = this.onInputHandler.bind(this);
         this.getFilteredChampion = this.getFilteredChampion.bind(this);
-    }
-
-    componentDidMount() {
-        this.getChampionsList();
-    }
-
-    getChampionsList = () => {
-        fetch('/champions-list')
-            .then(res => res.json())
-            .then(champions => this.setState({ championsList: champions }))
     }
 
     onInputHandler(event) {
