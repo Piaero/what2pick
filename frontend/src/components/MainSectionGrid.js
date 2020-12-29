@@ -3,6 +3,7 @@ import './MainSectionGrid.css';
 
 import { ColumnYourRole } from './ColumnYourRole.js';
 import { ChooseChampion } from './ChooseChampion';
+import { SuggestionRow } from './SuggestionRow';
 
 export class MainSectionGrid extends React.Component {
     constructor() {
@@ -47,7 +48,7 @@ export class MainSectionGrid extends React.Component {
 
     componentDidUpdate() {
         this.sendSelectedChampions();
-        console.log(this.state) // to delete later
+        console.log(this.state) // TODO: to delete later
     }
 
     sendSelectedChampions = () => {
@@ -60,7 +61,7 @@ export class MainSectionGrid extends React.Component {
         fetch('/selections', requestOptions)
             .then(response => response.json())
             .then(data => {
-                if (this.state.suggestions !== data) {
+                if (JSON.stringify(this.state.suggestions) !== JSON.stringify(data)) {
                     this.setState({ suggestions: data })
                 }
             });
