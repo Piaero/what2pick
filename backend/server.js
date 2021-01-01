@@ -138,7 +138,7 @@ app.post('/selections', async (req, res) => {
       // Get synergies for all lanes except myRole
       await client.db("what2pick").collection('champions').find({ name: teammateFromLane }).project({ name: 1, synergies: 1 }).toArray()
         .then(results => {
-          if (results[0] !== undefined && results[0].synergies.length !== 0 && lanes[i] !== myRole) {
+          if (results[0] !== undefined && results[0].synergies.length !== 0 && lanes[i] !== myRole && myRole !== "none") {
             for (let j = 0; j < results[0].synergies.length; j++) {
               let championToPush = {}
 
