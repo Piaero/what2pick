@@ -129,7 +129,7 @@ export class MainSectionGrid extends React.Component {
                 </div>
 
                 <div className="sugestions-column">
-                    <div className="grid-picks__title"><h2>Best counters for Selected Your Role:</h2></div>
+                    <div className="grid-picks__title"><h2>Best champion for your selected role:</h2></div>
                     <div className="sugestion-entry"> <SuggestionRow suggestions={this.state.suggestions} row={1}/> </div>
                     <div className="sugestion-entry"> <SuggestionRow suggestions={this.state.suggestions} row={2}/> </div>
                     <div className="sugestion-entry"> <SuggestionRow suggestions={this.state.suggestions} row={3}/> </div>
