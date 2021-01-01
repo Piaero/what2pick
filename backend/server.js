@@ -237,7 +237,7 @@ app.post('/selections', async (req, res) => {
     console.log(JSON.stringify(response, null, " "))
     console.log(`------------------------TEST-------------------------------------`)
 
-    res.json(`${response}`)
+    res.json(response)
 
   } catch (error) {
     console.log(error);
