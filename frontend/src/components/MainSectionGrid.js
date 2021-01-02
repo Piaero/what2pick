@@ -50,7 +50,7 @@ export class MainSectionGrid extends React.Component {
         if (JSON.stringify(this.state.selections) !== JSON.stringify(prevState.selections)) {
             this.sendSelectedChampions();
         }
-        console.log(this.state) // TODO: to delete later
+        console.log(this.state)
     }
 
     sendSelectedChampions = () => {
@@ -74,10 +74,6 @@ export class MainSectionGrid extends React.Component {
                 myRole: role
             }
         }))
-
-        // Need to remove these developer logs
-        console.log(`just clicked on ${role}`)
-        console.log(`myRole is now: ${this.state.selections.myRole}`)
     }
 
 
@@ -91,8 +87,6 @@ export class MainSectionGrid extends React.Component {
                 }
             }
         }))
-
-        console.log(`State entry: ${team} ${lane} champion is now: ${this.state.selections[team][lane]}`)
     }
 
     render() {
