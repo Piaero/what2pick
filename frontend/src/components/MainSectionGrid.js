@@ -46,8 +46,10 @@ export class MainSectionGrid extends React.Component {
             .then(champions => this.setState({ championsList: champions }))
     }
 
-    componentDidUpdate() {
-        this.sendSelectedChampions();
+    componentDidUpdate(prevProps, prevState) {
+        if (JSON.stringify(this.state.selections) !== JSON.stringify(prevState.selections)) {
+            this.sendSelectedChampions();
+        }
         console.log(this.state) // TODO: to delete later
     }
 
@@ -61,9 +63,7 @@ export class MainSectionGrid extends React.Component {
         fetch('/selections', requestOptions)
             .then(response => response.json())
             .then(data => {
-                if (JSON.stringify(this.state.suggestions) !== JSON.stringify(data)) {
-                    this.setState({ suggestions: data })
-                }
+                this.setState({ suggestions: data })
             });
     }
 
