@@ -1,7 +1,15 @@
-.suggestion-avatar-and-caption {
-    display: block;
+.sugestion-entry {
+    display: flex;
 }
 
-.suggestion-champion-caption {
-    text-align: center;
+.counter-or-synergy-text {
+    display: inline;
+    vertical-align: top;
+}
+
+.counter-synergy-entry {
+    display: inline-block;
+    margin-left: 5px;
+    margin-right: 5px;
+    vertical-align: top;
 }

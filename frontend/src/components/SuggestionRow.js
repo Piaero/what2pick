@@ -19,6 +19,7 @@ const ChampionAvatarAndCaption = ({ currentChampion }) => {
 
 const Score = ({ currentChampion, score }) => {
     if (currentChampion && currentChampion !== "No more counters" && currentChampion !== "Please select your role and enemies") {
+        // consider putting the score under the champion name
         return (
             <div className="score-container">
                 SCORE: {score}%
@@ -32,12 +33,12 @@ const Score = ({ currentChampion, score }) => {
 const CounterTo = ({ currentChampion, counters }) => {
     if (currentChampion && currentChampion !== "No more counters" && currentChampion !== "Please select your role and enemies" && counters) {
         return (
-            <div className="counter-to-container">
-                COUNTERS: 
+            <div className="counter-synergy-cotainer">
+               <div className="counter-or-synergy-text">Counter to: </div>  
                 {
                     Object.keys(counters).map(function (item, i) {
-                        return <div key={i}>
-                            <li>{item}</li>
+                        return <div key={i} className="counter-synergy-entry">
+                            {item} <br />
                             {Object.values(counters)[i].counterRate * 100} %
         </div>
                     })
@@ -53,12 +54,12 @@ const CounterTo = ({ currentChampion, counters }) => {
 const SynergyWith = ({ currentChampion, synergies }) => {
     if (currentChampion && currentChampion !== "No more counters" && currentChampion !== "Please select your role and enemies" && synergies) {
         return (
-            <div className="synergy-to-container">
-                SYNERGIES: 
+            <div className="counter-synergy-cotainer">
+               <div className="counter-or-synergy-text">Synergies: </div> 
                 {
                     Object.keys(synergies).map(function (item, i) {
-                        return <div key={i}>
-                            <li>{item}</li>
+                        return <div key={i} className="counter-synergy-entry">
+                            {item} <br />
                             {Object.values(synergies)[i].synergyRate * 100} %
         </div>
                     })
@@ -94,7 +95,7 @@ export class SuggestionRow extends React.Component {
 
 
         return (
-            <div className="suggestion-row">
+            <div className="sugestion-entry">
                 <br />
                 <ChampionAvatarAndCaption currentChampion={championName} />
                 <br />
@@ -106,7 +107,6 @@ export class SuggestionRow extends React.Component {
 
                     <div className="counter-to">
                         <CounterTo currentChampion={championName} counters={counters} />
-                        {console.log(championName)}
                     </div>
 
                     <div className="synergy-with">
