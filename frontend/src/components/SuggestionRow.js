@@ -30,11 +30,12 @@ const Score = ({ currentChampion, score }) => {
     }
 };
 
-const CounterTo = ({ currentChampion, counters }) => {
+const CounterTo = ({ currentChampion, counters, counterOrAvoid }) => {
+    let counterOrSynergyText = counterOrAvoid === "counter" ? "Counter to: " : "Countered by: "
     if (currentChampion && currentChampion !== "No more counters" && currentChampion !== "Please select your role and enemies" && counters) {
         return (
             <div className="counter-synergy-cotainer">
-               <div className="counter-or-synergy-text">Counter to: </div>  
+                <div className="counter-or-synergy-text">{counterOrSynergyText}</div>
                 {
                     Object.keys(counters).map(function (item, i) {
                         return <div key={i} className="counter-synergy-entry">
@@ -55,7 +56,7 @@ const SynergyWith = ({ currentChampion, synergies }) => {
     if (currentChampion && currentChampion !== "No more counters" && currentChampion !== "Please select your role and enemies" && synergies) {
         return (
             <div className="counter-synergy-cotainer">
-               <div className="counter-or-synergy-text">Synergies: </div> 
+                <div className="counter-or-synergy-text">Synergies: </div>
                 {
                     Object.keys(synergies).map(function (item, i) {
                         return <div key={i} className="counter-synergy-entry">
@@ -80,18 +81,20 @@ export class SuggestionRow extends React.Component {
 
 
     render() {
+        let keywordToGetData = this.props.counterOrAvoid === "counter" ? "bestCountersSorted" : "bestAvoidSorted"
+
         let championName =
-            this.props.suggestions.bestCountersSorted ?
-                this.props.suggestions.bestCountersSorted.length > 0 ?
-                    this.props.suggestions.bestCountersSorted[this.props.row - 1] ?
-                        this.props.suggestions.bestCountersSorted[this.props.row - 1][0]
+            this.props.suggestions[keywordToGetData] ?
+                this.props.suggestions[keywordToGetData].length > 0 ?
+                    this.props.suggestions[keywordToGetData][this.props.row - 1] ?
+                        this.props.suggestions[keywordToGetData][this.props.row - 1][0]
                         : "No more counters"
                     : "Please select your role and enemies"
                 : "Please select your role and enemies"
 
-        let score = this.props.suggestions && this.props.suggestions.bestCountersSorted && this.props.suggestions.bestCountersSorted[this.props.row - 1] && this.props.suggestions.bestCountersSorted[this.props.row - 1][1].score * 100;
-        let counters = this.props.suggestions && this.props.suggestions.bestCountersSorted && this.props.suggestions.bestCountersSorted[this.props.row - 1] && this.props.suggestions.bestCountersSorted[this.props.row - 1][1].counterTo
-        let synergies = this.props.suggestions && this.props.suggestions.bestCountersSorted && this.props.suggestions.bestCountersSorted[this.props.row - 1] && this.props.suggestions.bestCountersSorted[this.props.row - 1][1].synergyTo
+        let score = this.props.suggestions && this.props.suggestions[keywordToGetData] && this.props.suggestions[keywordToGetData][this.props.row - 1] && this.props.suggestions[keywordToGetData][this.props.row - 1][1].score * 100;
+        let counters = this.props.suggestions && this.props.suggestions[keywordToGetData] && this.props.suggestions[keywordToGetData][this.props.row - 1] && this.props.suggestions[keywordToGetData][this.props.row - 1][1].counterTo
+        let synergies = this.props.suggestions && this.props.suggestions[keywordToGetData] && this.props.suggestions[keywordToGetData][this.props.row - 1] && this.props.suggestions[keywordToGetData][this.props.row - 1][1].synergyTo
 
 
         return (
@@ -106,7 +109,7 @@ export class SuggestionRow extends React.Component {
                     </div>
 
                     <div className="counter-to">
-                        <CounterTo currentChampion={championName} counters={counters} />
+                        <CounterTo currentChampion={championName} counters={counters} counterOrAvoid={this.props.counterOrAvoid} />
                     </div>
 
                     <div className="synergy-with">
