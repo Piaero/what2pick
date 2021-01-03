@@ -56,8 +56,6 @@ app.post('/selections', async (req, res) => {
       let enemyFromLane = req.body.post.enemy[lanes[i].toLowerCase()]
       let teammateFromLane = req.body.post.teammate[lanes[i].toLowerCase()]
 
-      console.log(`--- Analising champion and his counters: ${enemyFromLane}`)
-
       if (enemyFromLane !== 'undefined' && enemyFromLane !== "none" && enemyFromLane !== "Wrong name!") {
 
         // Counters to Other Champions: Inputting counters from champions from all lanes other than myRole (because there is different score multiplier)
@@ -226,16 +224,19 @@ app.post('/selections', async (req, res) => {
       return avoidToPickProposition
     }
 
-    // Merge avoid into one and adjust score of duplicates
 
     let response = {
       bestCountersSorted: Object.entries(CountersProposition).sort((a, b) => (a[1].score < b[1].score) ? 1 : -1),
       bestAvoidSorted: Object.entries(mergeAvoidIntoSortableObject(avoidToPickFromAllLanes)).sort((a, b) => (a[1].score < b[1].score) ? 1 : -1)
     }
 
-    console.log(`------------------------TEST-------------myRole is: ${myRole}----`)
+    console.log(`------------------------req.body.post-------------------------------------`)
+    console.log(JSON.stringify(req.body.post, null, " "))
+    console.log(`------------------------req.body.post-------------------------------------`)
+
+    console.log(`------------------------RESPONSE-------------------------------------`)
     console.log(JSON.stringify(response, null, " "))
-    console.log(`------------------------TEST-------------------------------------`)
+    console.log(`------------------------RESPONSE-------------------------------------`)
 
     res.json(response)
 
