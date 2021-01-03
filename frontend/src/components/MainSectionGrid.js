@@ -60,11 +60,13 @@ export class MainSectionGrid extends React.Component {
             body: JSON.stringify({ post: this.state.selections })
         };
 
-        fetch('/selections', requestOptions)
+        if (this.state.selections.myRole !== "none") {
+            fetch('/selections', requestOptions)
             .then(response => response.json())
             .then(data => {
                 this.setState({ suggestions: data })
             });
+        }
     }
 
     handleMyRoleChange(role) {
@@ -124,13 +126,13 @@ export class MainSectionGrid extends React.Component {
 
                 <div className="sugestions-column">
                     <div className="grid-picks__title"><h2>Best champion for your selected role:</h2></div>
-                    <div> <SuggestionRow suggestions={this.state.suggestions} row={1} counterOrAvoid="counter"/> </div>
-                    <div> <SuggestionRow suggestions={this.state.suggestions} row={2} counterOrAvoid="counter"/> </div>
-                    <div> <SuggestionRow suggestions={this.state.suggestions} row={3} counterOrAvoid="counter"/> </div>
+                    <div> <SuggestionRow suggestions={this.state.suggestions} row={1} counterOrAvoid="counter" /> </div>
+                    <div> <SuggestionRow suggestions={this.state.suggestions} row={2} counterOrAvoid="counter" /> </div>
+                    <div> <SuggestionRow suggestions={this.state.suggestions} row={3} counterOrAvoid="counter" /> </div>
                     <div className="grid-picks__title"><h2>Avoid to pick</h2></div>
-                    <div><SuggestionRow suggestions={this.state.suggestions} row={1} counterOrAvoid="avoid"/></div>
-                    <div><SuggestionRow suggestions={this.state.suggestions} row={2} counterOrAvoid="avoid"/></div>
-                    <div><SuggestionRow suggestions={this.state.suggestions} row={3} counterOrAvoid="avoid"/></div>
+                    <div><SuggestionRow suggestions={this.state.suggestions} row={1} counterOrAvoid="avoid" /></div>
+                    <div><SuggestionRow suggestions={this.state.suggestions} row={2} counterOrAvoid="avoid" /></div>
+                    <div><SuggestionRow suggestions={this.state.suggestions} row={3} counterOrAvoid="avoid" /></div>
                 </div>
 
             </section>
