@@ -224,6 +224,13 @@ app.post('/selections', async (req, res) => {
       return avoidToPickProposition
     }
 
+    // Remove Champions that are in "avoidToPickFromAllLanes" from "CountersProposition"
+    let mergedAvoidToPickPropositionArray = Object.entries(mergeAvoidIntoSortableObject(avoidToPickFromAllLanes));
+    for (let i = 0; i < Object.entries(mergedAvoidToPickPropositionArray).length; i++) {
+      if (CountersProposition.hasOwnProperty(mergedAvoidToPickPropositionArray[i][0])) {
+        delete CountersProposition[mergedAvoidToPickPropositionArray[i][0]];
+      }
+    }
 
     let response = {
       bestCountersSorted: Object.entries(CountersProposition).sort((a, b) => (a[1].score < b[1].score) ? 1 : -1),
