@@ -22,7 +22,7 @@ const Score = ({ currentChampion, score }) => {
         // consider putting the score under the champion name
         return (
             <div className="score-container">
-                SCORE: {score}%
+                SCORE: {Math.round(score)}%
             </div>
         )
     } else {
@@ -40,7 +40,7 @@ const CounterTo = ({ currentChampion, counters, counterOrAvoid }) => {
                     Object.keys(counters).map(function (item, i) {
                         return <div key={i} className="counter-synergy-entry">
                             {item} <br />
-                            {Object.values(counters)[i].counterRate * 100} %
+                            {Math.round(Object.values(counters)[i].counterRate * 100)} %
         </div>
                     })
 
@@ -61,7 +61,7 @@ const SynergyWith = ({ currentChampion, synergies }) => {
                     Object.keys(synergies).map(function (item, i) {
                         return <div key={i} className="counter-synergy-entry">
                             {item} <br />
-                            {Object.values(synergies)[i].synergyRate * 100} %
+                            {Math.round(Object.values(synergies)[i].synergyRate * 100)} %
         </div>
                     })
                 }
