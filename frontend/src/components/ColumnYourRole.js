@@ -1,37 +1,46 @@
 import React from 'react';
 import './ColumnYourRole.css';
 
-import Top from '../assets/images/Top_icon.png';
-import Jungle from '../assets/images/Jungle_icon.png';
-import Middle from '../assets/images/Middle_icon.png';
-import Bottom from '../assets/images/Bottom_icon.png';
-import Support from '../assets/images/Support_icon.png';
-
 export class ColumnYourRole extends React.Component {
+
+    constructor() {
+        super();
+        this.state = {
+            arr: [
+                { name: "Top", isActive: false },
+                { name: "Jungle", isActive: false },
+                { name: "Middle", isActive: false },
+                { name: "Bottom", isActive: false },
+                { name: "Support", isActive: false }
+            ]
+        };
+    }
+
+    handleActivityChange(index) {
+        let temporaryArray = this.state.arr
+
+        temporaryArray.forEach((e) => {
+            e.isActive = false;
+        })
+
+        temporaryArray[index].isActive = true;
+        this.setState({ arr: temporaryArray });
+    }
+
     render() {
         return (
             <React.Fragment>
                 <h2 className="grid-picks__title">Select Your Role</h2>
-                <div className="role-container inactive" onClick={e => this.props.handleMyRoleChange("Top")}>
-                    <img src={Top} alt="Top" className="role-icon" />
-                    <span className="role-caption">Top</span>
-                </div>
-                <div className="role-container inactive" onClick={e => this.props.handleMyRoleChange("Jungle")}>
-                    <img src={Jungle} alt="Jungle" className="role-icon" />
-                    <span className="role-caption">Jungle</span>
-                </div>
-                <div className="role-container inactive" onClick={e => this.props.handleMyRoleChange("Middle")}>
-                    <img src={Middle} alt="Middle" className="role-icon" />
-                    <span className="role-caption">Middle</span>
-                </div>
-                <div className="role-container inactive" onClick={e => this.props.handleMyRoleChange("Bottom")}>
-                    <img src={Bottom} alt="Bottom" className="role-icon" />
-                    <span className="role-caption">Bottom</span>
-                </div>
-                <div className="role-container inactive" onClick={e => this.props.handleMyRoleChange("Support")}>
-                    <img src={Support} alt="Support" className="role-icon" />
-                    <span className="role-caption">Support</span>
-                </div>
+
+                {this.state.arr.map((el, index) =>
+                    <div className={`role-container ${this.state.arr[index].isActive === true ? "active" : "inactive"}`} key={index} onClick={() => {
+                        this.handleActivityChange(index);
+                        this.props.handleMyRoleChange(el.name)
+                    }}>
+                        <img src={require(`../assets/images/${el.name}_icon.png`)} alt={el.name} className="role-icon" />
+                        <span className="role-caption">{el.name}</span>
+                    </div>
+                )}
             </React.Fragment>
         )
     };
