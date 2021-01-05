@@ -71,14 +71,14 @@ export class ChooseChampion extends React.Component {
 
     getFilteredChampion(input, championsList) {
         function filterOneChampion(input) {
-            var results = [];
             let tempArray = Array.from(championsList);
 
             for (var i = 0; i < championsList.length; i++) {
                 tempArray[i] = championsList[i].toLowerCase()
-                if (tempArray[i].indexOf(input.toLowerCase()) === 0) results.push(championsList[i]);
+                if (tempArray[i].indexOf(input.toLowerCase()) === 0) {
+                    return championsList[i];
+                }
             }
-            return results[0];
         }
 
         if (filterOneChampion(input)) {
