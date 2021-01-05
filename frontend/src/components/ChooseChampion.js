@@ -60,7 +60,7 @@ export class ChooseChampion extends React.Component {
             });
         } else {
             const input = event.currentTarget.value;
-            const filteredChampion = this.getFilteredChampion(input)
+            const filteredChampion = this.getFilteredChampion(input, this.state.championsList)
             this.setState({
                 championSelected: filteredChampion
             });
@@ -69,10 +69,20 @@ export class ChooseChampion extends React.Component {
         }
     }
 
-    getFilteredChampion(input) {
-        let oneFilteredChampion = this.state.championsList.find(champion => champion.toLowerCase().includes(input.toLowerCase()))
-        if (oneFilteredChampion) {
-            return oneFilteredChampion;
+    getFilteredChampion(input, championsList) {
+        function filterOneChampion(input) {
+            var results = [];
+            let tempArray = Array.from(championsList);
+
+            for (var i = 0; i < championsList.length; i++) {
+                tempArray[i] = championsList[i].toLowerCase()
+                if (tempArray[i].indexOf(input.toLowerCase()) === 0) results.push(championsList[i]);
+            }
+            return results[0];
+        }
+
+        if (filterOneChampion(input)) {
+            return filterOneChampion(input);
         } else {
             return "Wrong name!"
         }
