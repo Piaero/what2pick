@@ -42,6 +42,7 @@ app.post('/selections', async (req, res) => {
   let countersFromAllLanes = [];
   let CountersProposition = {};
   let avoidToPickFromAllLanes = [];
+  let avoidToPickProposition = {};
   let synergyWithTeammates = [];
 
   let lanes = ["Top", "Jungle", "Middle", "Bottom", "Support", "Unknown"];
@@ -61,8 +62,8 @@ app.post('/selections', async (req, res) => {
         // Counters to Other Champions: Inputting counters from champions from all lanes other than myRole (because there is different score multiplier)
         if (lanes[i] !== myRole && myRole !== "none" && myRole !== undefined) {
 
-          //  I should use projection parameter to reduce results
-          await client.db("what2pick").collection('champions').find({ name: enemyFromLane }).toArray()
+          //  Get counters from lanes different than myRole
+          await client.db("what2pick").collection('champions').find({ name: enemyFromLane }).project({ name: 1, counters: 1, laneType: 1 }).toArray()
             .then(results => {
 
               if (results[0].counters[myRole] !== undefined) {
@@ -98,8 +99,8 @@ app.post('/selections', async (req, res) => {
           // Counters On Lane: Inputting counters from champion from my lane (myRole)
         } else if (myRole !== "none" && myRole !== undefined) {
 
-          //  I should use projection parameter to reduce results
-          await client.db("what2pick").collection('champions').find({ name: enemyFromLane }).toArray()
+          //  Get counters from myRole
+          await client.db("what2pick").collection('champions').find({ name: enemyFromLane }).project({ name: 1, counters: 1, laneType: 1 }).toArray()
             .then(results => {
 
               if (results[0].counters[myRole] !== undefined) {
@@ -198,43 +199,76 @@ app.post('/selections', async (req, res) => {
       }
     }
 
-    function mergeAvoidIntoSortableObject(array) {
-      let avoidToPickProposition = {};
-
-      for (let i = 0; i < array.length; i++) {
-        if (avoidToPickProposition.hasOwnProperty(array[i].name)) {
-          avoidToPickProposition[array[i].name].score += array[i].score
-          avoidToPickProposition[array[i].name].counterTo[Object.keys(array[i].counterTo)[0]] = {
-            counterRate: array[i].counterTo[Object.keys(array[i].counterTo)[0]].counterRate,
-            source: array[i].counterTo[Object.keys(array[i].counterTo)[0]].source
-          }
-        } else {
-          avoidToPickProposition[array[i].name] = {
-            score: array[i].score,
-            counterTo: {
-              [Object.keys(array[i].counterTo)[0]]: {
-                counterRate: array[i].counterTo[Object.keys(array[i].counterTo)[0]].counterRate,
-                source: array[i].counterTo[Object.keys(array[i].counterTo)[0]].source
-              }
+    // Merge avoit to pick from all lanes
+    for (let i = 0; i < avoidToPickFromAllLanes.length; i++) {
+      if (avoidToPickProposition.hasOwnProperty(avoidToPickFromAllLanes[i].name)) {
+        avoidToPickProposition[avoidToPickFromAllLanes[i].name].score += avoidToPickFromAllLanes[i].score
+        avoidToPickProposition[avoidToPickFromAllLanes[i].name].counterTo[Object.keys(avoidToPickFromAllLanes[i].counterTo)[0]] = {
+          counterRate: avoidToPickFromAllLanes[i].counterTo[Object.keys(avoidToPickFromAllLanes[i].counterTo)[0]].counterRate,
+          source: avoidToPickFromAllLanes[i].counterTo[Object.keys(avoidToPickFromAllLanes[i].counterTo)[0]].source
+        }
+      } else {
+        avoidToPickProposition[avoidToPickFromAllLanes[i].name] = {
+          score: avoidToPickFromAllLanes[i].score,
+          counterTo: {
+            [Object.keys(avoidToPickFromAllLanes[i].counterTo)[0]]: {
+              counterRate: avoidToPickFromAllLanes[i].counterTo[Object.keys(avoidToPickFromAllLanes[i].counterTo)[0]].counterRate,
+              source: avoidToPickFromAllLanes[i].counterTo[Object.keys(avoidToPickFromAllLanes[i].counterTo)[0]].source
             }
           }
         }
       }
-
-      return avoidToPickProposition
     }
 
+    // Remove from Counter propositions champions that aren't playable (laneType) on myRole
+    let queryForRemovalCountersFromOtherLanes = []
+
+    for (let i = 0; i < Object.keys(CountersProposition).length; i++) {
+      let tempObject = { name: Object.keys(CountersProposition)[i] }
+      queryForRemovalCountersFromOtherLanes.push(tempObject)
+    }
+
+    await client.db("what2pick").collection('champions').find({ $or: queryForRemovalCountersFromOtherLanes }).project({ name: 1, laneType: 1 }).toArray()
+      .then(results => {
+        for (let i = 0; i < results.length; i++) {
+          if (!results[i].laneType.includes(myRole)) {
+            delete CountersProposition[results[i].name]
+          }
+        }
+      })
+      .catch(error => console.error(error))
+
+
+    // Remove from Avoid to Pick propositions champions that aren't playable (laneType) on myRole
+    let queryForRemovalAvoidsFromOtherLanes = []
+
+    for (let i = 0; i < Object.keys(avoidToPickProposition).length; i++) {
+      let tempObject = { name: Object.keys(avoidToPickProposition)[i] }
+      queryForRemovalAvoidsFromOtherLanes.push(tempObject)
+    }
+
+    await client.db("what2pick").collection('champions').find({ $or: queryForRemovalAvoidsFromOtherLanes }).project({ name: 1, laneType: 1 }).toArray()
+      .then(results => {
+
+        for (let i = 0; i < results.length; i++) {
+          if (!results[i].laneType.includes(myRole)) {
+            delete avoidToPickProposition[results[i].name]
+          }
+        }
+      })
+      .catch(error => console.error(error))
+
     // Remove Champions that are in "avoidToPickFromAllLanes" from "CountersProposition"
-    let mergedAvoidToPickPropositionArray = Object.entries(mergeAvoidIntoSortableObject(avoidToPickFromAllLanes));
-    for (let i = 0; i < Object.entries(mergedAvoidToPickPropositionArray).length; i++) {
-      if (CountersProposition.hasOwnProperty(mergedAvoidToPickPropositionArray[i][0])) {
-        delete CountersProposition[mergedAvoidToPickPropositionArray[i][0]];
+    for (let i = 0; i < Object.entries(avoidToPickProposition).length; i++) {
+      if (CountersProposition.hasOwnProperty(Object.entries(avoidToPickProposition)[i][0])) {
+        delete CountersProposition[Object.entries(avoidToPickProposition)[i][0]];
+        console.log(`removed ${Object.entries(avoidToPickProposition)[i][0]}`)
       }
     }
 
     let response = {
       bestCountersSorted: Object.entries(CountersProposition).sort((a, b) => (a[1].score < b[1].score) ? 1 : -1),
-      bestAvoidSorted: Object.entries(mergeAvoidIntoSortableObject(avoidToPickFromAllLanes)).sort((a, b) => (a[1].score < b[1].score) ? 1 : -1)
+      bestAvoidSorted: Object.entries(avoidToPickProposition).sort((a, b) => (a[1].score < b[1].score) ? 1 : -1)
     }
 
     console.log(`------------------------req.body.post-------------------------------------`)
