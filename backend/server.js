@@ -258,11 +258,10 @@ app.post('/selections', async (req, res) => {
       })
       .catch(error => console.error(error))
 
-    // Remove Champions that are in "avoidToPickFromAllLanes" from "CountersProposition"
+    // Adjust score of Champions that are both in "avoidToPickFromAllLanes" and "CountersProposition"
     for (let i = 0; i < Object.entries(avoidToPickProposition).length; i++) {
       if (CountersProposition.hasOwnProperty(Object.entries(avoidToPickProposition)[i][0])) {
-        delete CountersProposition[Object.entries(avoidToPickProposition)[i][0]];
-        console.log(`removed ${Object.entries(avoidToPickProposition)[i][0]}`)
+        CountersProposition[Object.entries(avoidToPickProposition)[i][0]].score -= avoidToPickProposition[Object.entries(avoidToPickProposition)[i][0]].score
       }
     }
 
