@@ -93,7 +93,7 @@ export class ChooseChampion extends React.Component {
         return (
             <div className="choose-champion-container">
 
-                <div className="role-and-caption inactive">
+                <div className={`role-and-caption ${this.state.championSelected !== "Choose champion" && this.state.championSelected !== "Wrong name!" && this.state.championSelected !== "none" ? "active" : "inactive"}`}>
                     <img className="role-icon" src={require(`../assets/images/${this.props.lane}_icon.png`)} alt={this.props.lane} />
                     <span className="role-caption">{this.props.lane}</span>
                 </div>
