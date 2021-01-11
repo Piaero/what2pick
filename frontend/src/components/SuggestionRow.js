@@ -55,7 +55,7 @@ const CounterTo = ({ currentChampion, counters, counterOrAvoid }) => {
 };
 
 const SynergyWith = ({ currentChampion, synergies }) => {
-    if (currentChampion && currentChampion !== "No more counters" && currentChampion !== "Please select your role and enemies" && synergies) {
+    if (currentChampion && currentChampion !== "No more counters" && currentChampion !== "Please select your role and enemies" && synergies && Object.keys(synergies).length !== 0) {
         let synergiesSorted = Object.entries(synergies).sort((a, b) => (a[1].synergyRate < b[1].synergyRate) ? 1 : -1)
 
         return (
