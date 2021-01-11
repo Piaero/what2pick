@@ -33,14 +33,16 @@ const Score = ({ currentChampion, score }) => {
 const CounterTo = ({ currentChampion, counters, counterOrAvoid }) => {
     let counterOrSynergyText = counterOrAvoid === "counter" ? "Counter to: " : "Countered by: "
     if (currentChampion && currentChampion !== "No more counters" && currentChampion !== "Please select your role and enemies" && counters) {
+        let countersSorted = Object.entries(counters).sort((a, b) => (a[1].counterRate < b[1].counterRate) ? 1 : -1)
+
         return (
             <div className="counter-synergy-cotainer">
                 <div className="counter-or-synergy-text">{counterOrSynergyText}</div>
                 {
-                    Object.keys(counters).map(function (item, i) {
+                    countersSorted.map(function (item, i) {
                         return <div key={i} className="counter-synergy-entry">
-                            {item} <br />
-                            {Math.round(Object.values(counters)[i].counterRate * 100)} %
+                            {item[0]} <br />
+                            {Math.round(item[1].counterRate * 100)} %
         </div>
                     })
 
@@ -54,14 +56,16 @@ const CounterTo = ({ currentChampion, counters, counterOrAvoid }) => {
 
 const SynergyWith = ({ currentChampion, synergies }) => {
     if (currentChampion && currentChampion !== "No more counters" && currentChampion !== "Please select your role and enemies" && synergies) {
+        let synergiesSorted = Object.entries(synergies).sort((a, b) => (a[1].synergyRate < b[1].synergyRate) ? 1 : -1)
+
         return (
             <div className="counter-synergy-cotainer">
                 <div className="counter-or-synergy-text">Synergies: </div>
                 {
-                    Object.keys(synergies).map(function (item, i) {
+                    synergiesSorted.map(function (item, i) {
                         return <div key={i} className="counter-synergy-entry">
-                            {item} <br />
-                            {Math.round(Object.values(synergies)[i].synergyRate * 100)} %
+                            {item[0]}<br />
+                            {Math.round(item[1].synergyRate * 100)} %
         </div>
                     })
                 }
