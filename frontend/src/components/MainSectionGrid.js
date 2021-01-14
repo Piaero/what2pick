@@ -46,8 +46,26 @@ export class MainSectionGrid extends React.Component {
             .then(champions => this.setState({ championsList: champions }))
     }
 
+    ifSelectionsEmpty = (object) => {
+        let isEmpty = true
+
+        for (let property in object.teammate) {
+            if (object.teammate[property] !== "none") {
+             isEmpty = false
+            } 
+         }
+
+        for (let property in object.enemy) {
+           if (object.enemy[property] !== "none") {
+            isEmpty = false
+           } 
+        }
+
+        return isEmpty
+    }
+
     componentDidUpdate(prevProps, prevState) {
-        if (JSON.stringify(this.state.selections) !== JSON.stringify(prevState.selections)) {
+        if (JSON.stringify(this.state.selections) !== JSON.stringify(prevState.selections) && (this.ifSelectionsEmpty(this.state.selections) === false || this.ifSelectionsEmpty(prevState.selections) === false) ) {
             this.sendSelectedChampions();
         }
         console.log(this.state)
@@ -62,10 +80,10 @@ export class MainSectionGrid extends React.Component {
 
         if (this.state.selections.myRole !== "none") {
             fetch('/selections', requestOptions)
-            .then(response => response.json())
-            .then(data => {
-                this.setState({ suggestions: data })
-            });
+                .then(response => response.json())
+                .then(data => {
+                    this.setState({ suggestions: data })
+                });
         }
     }
 
