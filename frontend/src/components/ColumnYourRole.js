@@ -37,7 +37,7 @@ export class ColumnYourRole extends React.Component {
                         this.handleActivityChange(index);
                         this.props.handleMyRoleChange(el.name)
                     }}>
-                        <img src={require(`../assets/images/${el.name}_icon.png`)} alt={el.name} className="role-icon" />
+                        <img src={require(`../assets/images/${el.name}_icon.png`)} alt={el.name} className="role-icon role-icon-hover" />
                         <span className="role-caption">{el.name}</span>
                     </div>
                 )}

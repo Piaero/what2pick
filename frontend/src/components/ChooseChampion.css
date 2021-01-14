@@ -23,12 +23,6 @@
     margin-top: 10px;
 }
 
-.role-and-caption:hover {
-    opacity: 1;
-    filter: grayscale(0%);
-    cursor: pointer;
-}
-
 .choose-champion-caption {
     font-size: 10px;
     margin-top: 10px;
