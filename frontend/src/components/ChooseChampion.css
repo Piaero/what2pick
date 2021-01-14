@@ -40,3 +40,9 @@
 .search-icon {
     width: 11px;
 }
+
+.cancel-button {
+    width: 20px;
+    position: absolute;
+    cursor: pointer;
+}

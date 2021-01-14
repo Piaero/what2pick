@@ -4,11 +4,12 @@ import './ChooseChampion.css';
 import SearchIcon from '../assets/icons/search.svg'
 import Question from '../assets/images/question-mark.png';
 
-const ChampionAvatar = ({ currentChampion, championsList }) => {
+const ChampionAvatar = ({ currentChampion, championsList, onClickHandler }) => {
     if (championsList.includes(currentChampion)) {
         return (
             <div>
                 <img className="champion-avatar" src={require(`../assets/images/champions/${currentChampion.replace(" ", "_")}Square.png`)} alt={currentChampion} />
+                <img src={require(`../assets/icons/cancel.svg`)} className="cancel-button" alt="Cancel" onClick={onClickHandler} />
             </div>
         )
     } else if (currentChampion === "Wrong name!") {
@@ -51,6 +52,13 @@ export class ChooseChampion extends React.Component {
 
         this.onInputHandler = this.onInputHandler.bind(this);
         this.getFilteredChampion = this.getFilteredChampion.bind(this);
+        this.cancelChampion = this.cancelChampion.bind(this);
+    }
+
+    cancelChampion = () => {
+        this.myInput.value = ''
+        this.setState({ championSelected: "Choose champion" })
+        this.props.handleChampionChange(this.props.lane.toLowerCase(), "none", this.props.team)
     }
 
     onInputHandler(event) {
@@ -99,13 +107,13 @@ export class ChooseChampion extends React.Component {
                 </div>
 
                 <div className="champion-avatar-and-caption">
-                    <ChampionAvatar currentChampion={this.state.championSelected} championsList={this.state.championsList} />
+                    <ChampionAvatar currentChampion={this.state.championSelected} championsList={this.state.championsList} onClickHandler={this.cancelChampion} />
                     <ChampionCaption currentChampion={this.state.championSelected} championsList={this.state.championsList} />
                 </div>
 
                 <div className="search-container">
                     <button type="submit" className="search-button"><img src={SearchIcon} className="search-icon" alt="Search" /></button>
-                    <input type="text" placeholder="Find champion..." name="search" onChange={this.onInputHandler} />
+                    <input type="text" placeholder="Find champion..." name="search" onChange={this.onInputHandler} ref={(el) => this.myInput = el} />
                 </div>
             </div>
         )
