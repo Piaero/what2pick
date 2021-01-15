@@ -29,7 +29,6 @@ app.get('/champions-list', (req, res) => {
   });
 });
 
-// BUG: After updating state in main section grid, it sends 2 requests to server
 // TODO: unify objects. I am using here 3 kind of objects notations, 2 types of arrays and one JS Object...
 
 app.post('/selections', async (req, res) => {

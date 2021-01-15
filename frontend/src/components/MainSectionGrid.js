@@ -124,7 +124,7 @@ export class MainSectionGrid extends React.Component {
 
                 <div className="grid-column">
                     <h2 className="grid-picks__title">Your Team Column</h2>
-                    <div><ChooseChampion lane="Top" championsList={this.state.championsList} handleChampionChange={this.handleChampionChange} team="teammate" tst="dupa" /></div>
+                    <div><ChooseChampion lane="Top" championsList={this.state.championsList} handleChampionChange={this.handleChampionChange} team="teammate" /></div>
                     <div><ChooseChampion lane="Jungle" championsList={this.state.championsList} handleChampionChange={this.handleChampionChange} team="teammate" /></div>
                     <div><ChooseChampion lane="Middle" championsList={this.state.championsList} handleChampionChange={this.handleChampionChange} team="teammate" /></div>
                     <div><ChooseChampion lane="Bottom" championsList={this.state.championsList} handleChampionChange={this.handleChampionChange} team="teammate" /></div>
