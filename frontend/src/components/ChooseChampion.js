@@ -68,7 +68,7 @@ export class ChooseChampion extends React.Component {
             });
             this.props.handleChampionChange(this.props.lane.toLowerCase(), "none", this.props.team)
         } else {
-            const input = event.currentTarget.value;
+            const input = event.target.value;
             const filteredChampion = this.getFilteredChampion(input, this.state.championsList)
             this.setState({
                 championSelected: filteredChampion
