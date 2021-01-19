@@ -39,7 +39,6 @@ describe('Choose Champion rendering in various cases', () => {
 
   it('Renders on random single letter input', () => {
     for (let i = 32; i <= 126; i++) {
-      console.log(`Current Char is: ${String.fromCharCode(i)}`)
       wrapper.find('input').simulate('change', { target: { value: String.fromCharCode(i) } });
 
       expect(wrapper).toBeTruthy();

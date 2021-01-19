@@ -79,23 +79,20 @@ export class ChooseChampion extends React.Component {
     }
 
     getFilteredChampion(input, championsList) {
-        function filterOneChampion(input) {
-            var regEx = new RegExp(`^${input}`, "i");
+        let inputEscapeSpecial = input.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        let regEx = new RegExp("^" + inputEscapeSpecial, "i")
+        let result = ""
 
-            for (var i = 0; i < championsList.length; i++) {
-                if (regEx.test(championsList[i])) {
-                    return championsList[i];
-                }
+        for (var i = 0; i < championsList.length; i++) {
+            if (regEx.test(championsList[i])) {
+                return championsList[i];
+            } else {
+                result = championsList.find(champion => champion.toLowerCase().includes(input.toLowerCase()))
             }
-            return championsList.find(champion => champion.toLowerCase().includes(input.toLowerCase()))
         }
-
-        if (filterOneChampion(input)) {
-            return filterOneChampion(input);
-        } else {
-            return "Wrong name!"
-        }
+        return result ? result : "Wrong name!"
     }
+
 
     render() {
         return (
