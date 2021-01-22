@@ -62,7 +62,7 @@ app.post('/selections', async (req, res) => {
         if (lanes[i] !== myRole && myRole !== "none" && myRole !== undefined) {
 
           //  Get counters from lanes different than myRole
-          await client.db("what2pick").collection('champions').find({ name: enemyFromLane }).project({ name: 1, counters: 1, laneType: 1 }).toArray()
+          await client.db("what2pick").collection('champions').find({ name: enemyFromLane }).project({ name: 1, counters: 1}).toArray()
             .then(results => {
 
               if (results[0].counters[myRole] !== undefined) {
@@ -99,7 +99,7 @@ app.post('/selections', async (req, res) => {
         } else if (myRole !== "none" && myRole !== undefined) {
 
           //  Get counters from myRole
-          await client.db("what2pick").collection('champions').find({ name: enemyFromLane }).project({ name: 1, counters: 1, laneType: 1 }).toArray()
+          await client.db("what2pick").collection('champions').find({ name: enemyFromLane }).project({ name: 1, counters: 1}).toArray()
             .then(results => {
 
               if (results[0].counters[myRole] !== undefined) {
@@ -227,7 +227,8 @@ app.post('/selections', async (req, res) => {
       queryForRemovalCountersFromOtherLanes.push(tempObject)
     }
 
-    await client.db("what2pick").collection('champions').find({ $or: queryForRemovalCountersFromOtherLanes }).project({ name: 1, laneType: 1 }).toArray()
+    if (queryForRemovalCountersFromOtherLanes.length){
+      await client.db("what2pick").collection('champions').find({ $or: queryForRemovalCountersFromOtherLanes }).project({ name: 1, laneType: 1 }).toArray()
       .then(results => {
         for (let i = 0; i < results.length; i++) {
           if (!results[i].laneType.includes(myRole)) {
@@ -236,7 +237,7 @@ app.post('/selections', async (req, res) => {
         }
       })
       .catch(error => console.error(error))
-
+    }
 
     // Remove from Avoid to Pick propositions champions that aren't playable (laneType) on myRole
     let queryForRemovalAvoidsFromOtherLanes = []
@@ -246,7 +247,8 @@ app.post('/selections', async (req, res) => {
       queryForRemovalAvoidsFromOtherLanes.push(tempObject)
     }
 
-    await client.db("what2pick").collection('champions').find({ $or: queryForRemovalAvoidsFromOtherLanes }).project({ name: 1, laneType: 1 }).toArray()
+    if (queryForRemovalAvoidsFromOtherLanes.length) {
+      await client.db("what2pick").collection('champions').find({ $or: queryForRemovalAvoidsFromOtherLanes }).project({ name: 1, laneType: 1 }).toArray()
       .then(results => {
 
         for (let i = 0; i < results.length; i++) {
@@ -256,6 +258,7 @@ app.post('/selections', async (req, res) => {
         }
       })
       .catch(error => console.error(error))
+    }
 
     // Adjust score of Champions that are both in "avoidToPickFromAllLanes" and "CountersProposition"
     for (let i = 0; i < Object.entries(avoidToPickProposition).length; i++) {
