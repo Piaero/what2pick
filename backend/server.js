@@ -29,8 +29,6 @@ app.get('/champions-list', (req, res) => {
   });
 });
 
-// TODO: unify objects. I am using here 3 kind of objects notations, 2 types of arrays and one JS Object...
-
 app.post('/selections', async (req, res) => {
   var myRole = req.body.post.myRole
 
@@ -198,7 +196,7 @@ app.post('/selections', async (req, res) => {
       }
     }
 
-    // Merge avoit to pick from all lanes
+    // Merge avoid to pick from all lanes
     for (let i = 0; i < avoidToPickFromAllLanes.length; i++) {
       if (avoidToPickProposition.hasOwnProperty(avoidToPickFromAllLanes[i].name)) {
         avoidToPickProposition[avoidToPickFromAllLanes[i].name].score += avoidToPickFromAllLanes[i].score
