@@ -30,211 +30,144 @@ app.get('/champions-list', (req, res) => {
 });
 
 app.post('/selections', async (req, res) => {
+  console.log(`------------------BEGGINING OF NEW LOG (app.post('/selections')--------------------------`)
+
   var myRole = req.body.post.myRole
 
-  let counterOnLaneMultiplier = 1;
-  let counterOtherChampionsMultiplier = 0.45;
+  let counterOnMyLaneMultiplier = 1;
+  let counterOtherLaneMultiplier = 0.45;
   let synergyWithTeammatesMultiplier = 0.20;
-
-  let countersFromAllLanes = [];
-  let CountersProposition = {};
-  let avoidToPickFromAllLanes = [];
-  let avoidToPickProposition = {};
-  let synergyWithTeammates = [];
 
   let lanes = ["Top", "Jungle", "Middle", "Bottom", "Support", "Unknown"];
 
-  let queryForAvoidToCounter = `counters.${myRole}.counter`
-  let projectionForAvoidToCounter = `counters.${myRole}.counter.$`
+  var queryForAvoidToCounter = `counters.${myRole}.counter`
+  var projectionForAvoidToCounter = `counters.${myRole}.counter.$`
 
-  console.log(`------------------BEGGINING OF NEW LOG (app.post('/selections')--------------------------`)
+  var picksProposition = {}
+  var avoidToPickProposition = {}
+
+  function pushPicksIntoPicksProposition(championName, results, isMyRole, isCounterOrSynergy) {
+
+    let counterSynergyMultiplier = isCounterOrSynergy === "counters" ? isMyRole ? counterOnMyLaneMultiplier : counterOtherLaneMultiplier : synergyWithTeammatesMultiplier
+    let counterOrSynergy = isCounterOrSynergy === "counters" ? "counter" : "synergy"
+    let counterRateOrSynergyRate = isCounterOrSynergy === "counters" ? "counterRate" : "synergyRate"
+    let counterToOrSynergyTo = isCounterOrSynergy === "counters" ? "counterTo" : "synergyTo"
+
+    if (results !== undefined) {
+      for (let j = 0; j < results.length; j++) {
+        if (picksProposition.hasOwnProperty(results[j][counterOrSynergy])) {
+          picksProposition[results[j][counterOrSynergy]].score += results[j][counterRateOrSynergyRate] * counterSynergyMultiplier
+          picksProposition[results[j][counterOrSynergy]][counterToOrSynergyTo][championName] = {
+            [counterRateOrSynergyRate]: results[j][counterRateOrSynergyRate],
+            source: lanes[i],
+          }
+        } else {
+          picksProposition[results[j][counterOrSynergy]] = {
+            score: results[j][counterRateOrSynergyRate] * counterSynergyMultiplier,
+            synergyTo: {},
+            counterTo: {}
+          }
+          picksProposition[results[j][counterOrSynergy]][counterToOrSynergyTo] = {
+            [championName]: {
+              [counterRateOrSynergyRate]: results[j][counterRateOrSynergyRate],
+              source: lanes[i],
+            }
+          }
+        }
+      }
+    }
+  }
+
+  function pushAvoidToPickIntoPicksProposition(championName, results, isMyRole) {
+
+    let counterSynergyMultiplier = isMyRole ? counterOnMyLaneMultiplier : counterOtherLaneMultiplier
+
+    if (results !== undefined) {
+      for (let j = 0; j < results.length; j++) {
+        if (avoidToPickProposition.hasOwnProperty(results[j].name)) {
+          avoidToPickProposition[results[j].name].score += results[j].counters[myRole][0].counterRate * counterSynergyMultiplier
+          avoidToPickProposition[results[j].name].counterTo[championName] = {
+            counterRate: results[j].counters[myRole][0].counterRate,
+            source: lanes[i]
+          }
+        } else {
+          avoidToPickProposition[results[j].name] = {
+            score: results[j].counters[myRole][0].counterRate * counterSynergyMultiplier,
+            counterTo: {
+              [championName]: {
+                counterRate: results[j].counters[myRole][0].counterRate,
+                source: lanes[i]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 
   try {
-    for (let i = 0; i < lanes.length; i++) {
+    for (var i = 0; i < lanes.length; i++) {
       let enemyFromLane = req.body.post.enemy[lanes[i].toLowerCase()]
       let teammateFromLane = req.body.post.teammate[lanes[i].toLowerCase()]
 
       if (enemyFromLane !== 'undefined' && enemyFromLane !== "none" && enemyFromLane !== "Wrong name!") {
 
-        // Counters to Other Champions: Inputting counters from champions from all lanes other than myRole (because there is different score multiplier)
+        // Picks, Avoids and Synergies (!== myRole)
         if (lanes[i] !== myRole && myRole !== "none" && myRole !== undefined) {
 
-          //  Get counters from lanes different than myRole
-          await client.db("what2pick").collection('champions').find({ name: enemyFromLane }).project({ name: 1, counters: 1}).toArray()
+          await client.db("what2pick").collection('champions').find({ name: enemyFromLane }).project({ name: 1, counters: 1 }).toArray()
             .then(results => {
-
-              if (results[0].counters[myRole] !== undefined) {
-                for (let j = 0; j < results[0].counters[myRole].length; j++) {
-                  results[0].counters[myRole][j].score = results[0].counters[myRole][j].counterRate * counterOtherChampionsMultiplier;
-                  results[0].counters[myRole][j].source = lanes[i];
-                  results[0].counters[myRole][j].counterTo = { [enemyFromLane]: results[0].counters[myRole][j].counterRate };
-                  countersFromAllLanes.push(results[0].counters[myRole][j]);
-                }
-              }
+              pushPicksIntoPicksProposition(enemyFromLane, results[0] && results[0].counters && results[0].counters[myRole], false, "counters")
             })
             .catch(error => console.error(error))
 
-
-          // Avoid to pick propositions (!== myRole)
           await client.db("what2pick").collection('champions').find({ [queryForAvoidToCounter]: enemyFromLane }).project({ [projectionForAvoidToCounter]: 1, name: 1 }).toArray()
             .then(results => {
-              if (results.length !== 0) {
-                for (let j = 0; j < results.length; j++) {
-
-                  let championToPush = {}
-
-                  championToPush.name = results[j].name
-                  championToPush.score = results[j].counters[myRole][0].counterRate * counterOtherChampionsMultiplier
-                  championToPush.counterTo = { [enemyFromLane]: { counterRate: results[j].counters[myRole][0].counterRate, source: lanes[i] } }
-
-                  avoidToPickFromAllLanes.push(championToPush);
-                }
-              }
+              pushAvoidToPickIntoPicksProposition(enemyFromLane, results, false)
             })
             .catch(error => console.error(error))
 
-          // Counters On Lane: Inputting counters from champion from my lane (myRole)
+          await client.db("what2pick").collection('champions').find({ name: teammateFromLane }).project({ name: 1, synergies: 1 }).toArray()
+            .then(results => {
+              pushPicksIntoPicksProposition(teammateFromLane, results[0] && results[0].synergies, null, "synergies")
+            })
+            .catch(error => console.error(error))
+
+          // Picks and Avoids (myRole)
         } else if (myRole !== "none" && myRole !== undefined) {
-
-          //  Get counters from myRole
-          await client.db("what2pick").collection('champions').find({ name: enemyFromLane }).project({ name: 1, counters: 1}).toArray()
+          await client.db("what2pick").collection('champions').find({ name: enemyFromLane }).project({ name: 1, counters: 1 }).toArray()
             .then(results => {
-
-              if (results[0].counters[myRole] !== undefined) {
-                for (let j = 0; j < results[0].counters[myRole].length; j++) {
-                  results[0].counters[myRole][j].score = results[0].counters[myRole][j].counterRate * counterOnLaneMultiplier;
-                  results[0].counters[myRole][j].source = lanes[i];
-                  results[0].counters[myRole][j].counterTo = { [enemyFromLane]: results[0].counters[myRole][j].counterRate };
-                  countersFromAllLanes.push(results[0].counters[myRole][j]);
-                }
-              }
+              pushPicksIntoPicksProposition(enemyFromLane, results[0] && results[0].counters && results[0].counters[myRole], true, "counters")
             })
             .catch(error => console.error(error))
 
-          // Avoid to pick propositions (myRole)
           await client.db("what2pick").collection('champions').find({ [queryForAvoidToCounter]: enemyFromLane }).project({ [projectionForAvoidToCounter]: 1, name: 1 }).toArray()
             .then(results => {
-              if (results.length !== 0) {
-                for (let j = 0; j < results.length; j++) {
-
-                  let championToPush = {}
-
-                  championToPush.name = results[j].name
-                  championToPush.score = results[j].counters[myRole][0].counterRate * counterOnLaneMultiplier
-                  championToPush.counterTo = { [enemyFromLane]: { counterRate: results[j].counters[myRole][0].counterRate, source: lanes[i] } }
-
-                  avoidToPickFromAllLanes.push(championToPush);
-                }
-              }
+              pushAvoidToPickIntoPicksProposition(enemyFromLane, results, true)
             })
             .catch(error => console.error(error))
         }
       }
-
-      // Get synergies for all lanes except myRole
-      await client.db("what2pick").collection('champions').find({ name: teammateFromLane }).project({ name: 1, synergies: 1 }).toArray()
-        .then(results => {
-          if (results[0] !== undefined && results[0].synergies.length !== 0 && lanes[i] !== myRole && myRole !== "none") {
-            for (let j = 0; j < results[0].synergies.length; j++) {
-              let championToPush = {}
-
-              championToPush.name = results[0].synergies[j].synergy
-              championToPush.score = results[0].synergies[j].synergyRate * synergyWithTeammatesMultiplier
-              championToPush.synergyTo = { [teammateFromLane]: { synergyRate: results[0].synergies[j].synergyRate, source: lanes[i] } }
-
-              synergyWithTeammates.push(championToPush);
-            }
-          }
-        })
-        .catch(error => console.error(error))
-
     } // End of iterating trough all lanes
-
-
-    // Merge counters into one and create "SynergiesTo" key
-    for (let i = 0; i < countersFromAllLanes.length; i++) {
-      if (CountersProposition.hasOwnProperty(countersFromAllLanes[i].counter)) {
-        CountersProposition[countersFromAllLanes[i].counter].score += countersFromAllLanes[i].score
-        CountersProposition[countersFromAllLanes[i].counter].counterTo[Object.keys(countersFromAllLanes[i].counterTo)[0]] = {
-          counterRate: countersFromAllLanes[i].counterRate,
-          source: countersFromAllLanes[i].source
-        }
-        CountersProposition[countersFromAllLanes[i].counter].synergyTo = {}
-
-      } else {
-        CountersProposition[countersFromAllLanes[i].counter] = {
-          score: countersFromAllLanes[i].score,
-          counterTo: {
-            [Object.keys(countersFromAllLanes[i].counterTo)[0]]: {
-              counterRate: countersFromAllLanes[i].counterRate,
-              source: countersFromAllLanes[i].source
-            }
-          },
-          synergyTo: {}
-        }
-      }
-    }
-
-    // Merge Synergies with Counters
-    for (let i = 0; i < synergyWithTeammates.length; i++) {
-      if (CountersProposition.hasOwnProperty(synergyWithTeammates[i].name)) {
-        CountersProposition[synergyWithTeammates[i].name].score += synergyWithTeammates[i].score
-        CountersProposition[synergyWithTeammates[i].name].synergyTo[Object.keys(synergyWithTeammates[i].synergyTo)[0]] = {
-          synergyRate: synergyWithTeammates[i].synergyTo[Object.keys(synergyWithTeammates[i].synergyTo)[0]].synergyRate,
-          source: synergyWithTeammates[i].synergyTo[Object.keys(synergyWithTeammates[i].synergyTo)[0]].source
-        }
-      } else {
-        CountersProposition[synergyWithTeammates[i].name] = {
-          score: synergyWithTeammates[i].score,
-          synergyTo: {
-            [Object.keys(synergyWithTeammates[i].synergyTo)[0]]: {
-              synergyRate: synergyWithTeammates[i].synergyTo[Object.keys(synergyWithTeammates[i].synergyTo)[0]].synergyRate,
-              source: synergyWithTeammates[i].synergyTo[Object.keys(synergyWithTeammates[i].synergyTo)[0]].source
-            }
-          }
-        }
-      }
-    }
-
-    // Merge avoid to pick from all lanes
-    for (let i = 0; i < avoidToPickFromAllLanes.length; i++) {
-      if (avoidToPickProposition.hasOwnProperty(avoidToPickFromAllLanes[i].name)) {
-        avoidToPickProposition[avoidToPickFromAllLanes[i].name].score += avoidToPickFromAllLanes[i].score
-        avoidToPickProposition[avoidToPickFromAllLanes[i].name].counterTo[Object.keys(avoidToPickFromAllLanes[i].counterTo)[0]] = {
-          counterRate: avoidToPickFromAllLanes[i].counterTo[Object.keys(avoidToPickFromAllLanes[i].counterTo)[0]].counterRate,
-          source: avoidToPickFromAllLanes[i].counterTo[Object.keys(avoidToPickFromAllLanes[i].counterTo)[0]].source
-        }
-      } else {
-        avoidToPickProposition[avoidToPickFromAllLanes[i].name] = {
-          score: avoidToPickFromAllLanes[i].score,
-          counterTo: {
-            [Object.keys(avoidToPickFromAllLanes[i].counterTo)[0]]: {
-              counterRate: avoidToPickFromAllLanes[i].counterTo[Object.keys(avoidToPickFromAllLanes[i].counterTo)[0]].counterRate,
-              source: avoidToPickFromAllLanes[i].counterTo[Object.keys(avoidToPickFromAllLanes[i].counterTo)[0]].source
-            }
-          }
-        }
-      }
-    }
 
     // Remove from Counter propositions champions that aren't playable (laneType) on myRole
     let queryForRemovalCountersFromOtherLanes = []
 
-    for (let i = 0; i < Object.keys(CountersProposition).length; i++) {
-      let tempObject = { name: Object.keys(CountersProposition)[i] }
+    for (let i = 0; i < Object.keys(picksProposition).length; i++) {
+      let tempObject = { name: Object.keys(picksProposition)[i] }
       queryForRemovalCountersFromOtherLanes.push(tempObject)
     }
 
-    if (queryForRemovalCountersFromOtherLanes.length){
+    if (queryForRemovalCountersFromOtherLanes.length) {
       await client.db("what2pick").collection('champions').find({ $or: queryForRemovalCountersFromOtherLanes }).project({ name: 1, laneType: 1 }).toArray()
-      .then(results => {
-        for (let i = 0; i < results.length; i++) {
-          if (!results[i].laneType.includes(myRole)) {
-            delete CountersProposition[results[i].name]
+        .then(results => {
+          for (let i = 0; i < results.length; i++) {
+            if (!results[i].laneType.includes(myRole)) {
+              delete picksProposition[results[i].name]
+            }
           }
-        }
-      })
-      .catch(error => console.error(error))
+        })
+        .catch(error => console.error(error))
     }
 
     // Remove from Avoid to Pick propositions champions that aren't playable (laneType) on myRole
@@ -247,26 +180,25 @@ app.post('/selections', async (req, res) => {
 
     if (queryForRemovalAvoidsFromOtherLanes.length) {
       await client.db("what2pick").collection('champions').find({ $or: queryForRemovalAvoidsFromOtherLanes }).project({ name: 1, laneType: 1 }).toArray()
-      .then(results => {
-
-        for (let i = 0; i < results.length; i++) {
-          if (!results[i].laneType.includes(myRole)) {
-            delete avoidToPickProposition[results[i].name]
+        .then(results => {
+          for (let i = 0; i < results.length; i++) {
+            if (!results[i].laneType.includes(myRole)) {
+              delete avoidToPickProposition[results[i].name]
+            }
           }
-        }
-      })
-      .catch(error => console.error(error))
+        })
+        .catch(error => console.error(error))
     }
 
     // Adjust score of Champions that are both in "avoidToPickFromAllLanes" and "CountersProposition"
     for (let i = 0; i < Object.entries(avoidToPickProposition).length; i++) {
-      if (CountersProposition.hasOwnProperty(Object.entries(avoidToPickProposition)[i][0])) {
-        CountersProposition[Object.entries(avoidToPickProposition)[i][0]].score -= avoidToPickProposition[Object.entries(avoidToPickProposition)[i][0]].score
+      if (picksProposition.hasOwnProperty(Object.entries(avoidToPickProposition)[i][0])) {
+        picksProposition[Object.entries(avoidToPickProposition)[i][0]].score -= avoidToPickProposition[Object.entries(avoidToPickProposition)[i][0]].score
       }
     }
 
     let response = {
-      bestCountersSorted: Object.entries(CountersProposition).sort((a, b) => (a[1].score < b[1].score) ? 1 : -1),
+      bestCountersSorted: Object.entries(picksProposition).sort((a, b) => (a[1].score < b[1].score) ? 1 : -1),
       bestAvoidSorted: Object.entries(avoidToPickProposition).sort((a, b) => (a[1].score < b[1].score) ? 1 : -1)
     }
 
