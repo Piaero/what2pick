@@ -78,7 +78,7 @@ app.post('/selections', async (req, res) => {
     }
   }
 
-  function pushAvoidToPickIntoPicksProposition(championName, results, isMyRole) {
+  function pushAvoidToPickIntoAvoidsProposition(championName, results, isMyRole) {
 
     let counterSynergyMultiplier = isMyRole ? counterOnMyLaneMultiplier : counterOtherLaneMultiplier
 
@@ -123,7 +123,7 @@ app.post('/selections', async (req, res) => {
 
           await client.db("what2pick").collection('champions').find({ [queryForAvoidToCounter]: enemyFromLane }).project({ [projectionForAvoidToCounter]: 1, name: 1 }).toArray()
             .then(results => {
-              pushAvoidToPickIntoPicksProposition(enemyFromLane, results, false)
+              pushAvoidToPickIntoAvoidsProposition(enemyFromLane, results, false)
             })
             .catch(error => console.error(error))
 
@@ -143,7 +143,7 @@ app.post('/selections', async (req, res) => {
 
           await client.db("what2pick").collection('champions').find({ [queryForAvoidToCounter]: enemyFromLane }).project({ [projectionForAvoidToCounter]: 1, name: 1 }).toArray()
             .then(results => {
-              pushAvoidToPickIntoPicksProposition(enemyFromLane, results, true)
+              pushAvoidToPickIntoAvoidsProposition(enemyFromLane, results, true)
             })
             .catch(error => console.error(error))
         }
