@@ -105,7 +105,6 @@ app.post('/selections', async (req, res) => {
     }
   }
 
-  try {
     for (var i = 0; i < lanes.length; i++) {
       let enemyFromLane = req.body.post.enemy[lanes[i].toLowerCase()]
       let teammateFromLane = req.body.post.teammate[lanes[i].toLowerCase()]
@@ -212,9 +211,7 @@ app.post('/selections', async (req, res) => {
 
     res.json(response)
 
-  } catch (error) {
-    console.log(error);
-  }
+
 })
 
 if (process.env.NODE_ENV === 'production') {
