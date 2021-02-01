@@ -181,15 +181,17 @@ app.post('/selections', async (req, res) => {
     }
 
     // Adjust score of Champions that are both in "bestPicks" and "bestAvoids"
-    for (let i = 0; i < Object.entries(picksAndAvoidsProposition.bestAvoids).length; i++) {
-      if (picksAndAvoidsProposition.bestPicks.hasOwnProperty(Object.entries(picksAndAvoidsProposition.bestAvoids)[i][0])) {
-        picksAndAvoidsProposition.bestPicks[Object.entries(picksAndAvoidsProposition.bestAvoids)[i][0]].score -= picksAndAvoidsProposition.bestAvoids[Object.entries(picksAndAvoidsProposition.bestAvoids)[i][0]].score
+    let picksAndAvoidsPropositionSorted = JSON.parse(JSON.stringify(picksAndAvoidsProposition))
+
+    for (let i = 0; i < Object.entries(picksAndAvoidsPropositionSorted.bestAvoids).length; i++) {
+      if (picksAndAvoidsPropositionSorted.bestPicks.hasOwnProperty(Object.entries(picksAndAvoidsPropositionSorted.bestAvoids)[i][0])) {
+        picksAndAvoidsPropositionSorted.bestPicks[Object.entries(picksAndAvoidsPropositionSorted.bestAvoids)[i][0]].score -= picksAndAvoidsPropositionSorted.bestAvoids[Object.entries(picksAndAvoidsPropositionSorted.bestAvoids)[i][0]].score
       }
     }
 
     let response = {
-      bestCountersSorted: Object.entries(picksAndAvoidsProposition.bestPicks).sort((a, b) => (a[1].score < b[1].score) ? 1 : -1),
-      bestAvoidSorted: Object.entries(picksAndAvoidsProposition.bestAvoids).sort((a, b) => (a[1].score < b[1].score) ? 1 : -1)
+      bestCountersSorted: Object.entries(picksAndAvoidsPropositionSorted.bestPicks).sort((a, b) => (a[1].score < b[1].score) ? 1 : -1),
+      bestAvoidSorted: Object.entries(picksAndAvoidsPropositionSorted.bestAvoids).sort((a, b) => (a[1].score < b[1].score) ? 1 : -1)
     }
 
     console.log(`------------------------req.body.post-------------------------------------`)
@@ -204,14 +206,14 @@ app.post('/selections', async (req, res) => {
   })
 })
 
-  if (process.env.NODE_ENV === 'production') {
-    // Serve any static files
-    app.use(express.static(path.join(__dirname, '..', 'frontend/build')));
+if (process.env.NODE_ENV === 'production') {
+  // Serve any static files
+  app.use(express.static(path.join(__dirname, '..', 'frontend/build')));
 
-    // Handle React routing, return all requests to React app
-    app.get('*', function (req, res) {
-      res.sendFile(path.join(__dirname, '..', 'frontend/build', 'index.html'));
-    });
-  }
+  // Handle React routing, return all requests to React app
+  app.get('*', function (req, res) {
+    res.sendFile(path.join(__dirname, '..', 'frontend/build', 'index.html'));
+  });
+}
 
-  app.listen(port, () => console.log(`Listening on port ${port}`));
+app.listen(port, () => console.log(`Listening on port ${port}`));
