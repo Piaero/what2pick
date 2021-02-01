@@ -42,7 +42,7 @@ app.post('/selections', async (req, res) => {
 
   // maybe needs to move inside function
   var queryForAvoidToCounter = `counters.${myRole}.counter`
-  var projectionForAvoidToCounter = `counters.${myRole}.counter.$`
+  var projectionForAvoidToCounter = `counters.${myRole}.counterRate.$`
 
   var picksProposition = {}
   var avoidToPickProposition = {}
@@ -54,7 +54,7 @@ app.post('/selections', async (req, res) => {
     let counterRateOrSynergyRate = isCounterOrSynergy === "counters" ? "counterRate" : "synergyRate"
     let counterToOrSynergyTo = isCounterOrSynergy === "counters" ? "counterTo" : "synergyTo"
 
-    if (results !== undefined) {
+    if (results !== undefined && results.length != 0) {
       for (let j = 0; j < results.length; j++) {
         if (picksProposition.hasOwnProperty(results[j][counterOrSynergy])) {
           picksProposition[results[j][counterOrSynergy]].score += results[j][counterRateOrSynergyRate] * counterSynergyMultiplier
@@ -83,7 +83,7 @@ app.post('/selections', async (req, res) => {
 
     let counterSynergyMultiplier = isMyRole ? counterOnMyLaneMultiplier : counterOtherLaneMultiplier
 
-    if (results !== undefined) {
+    if (results !== undefined && results.length != 0) {
       for (let j = 0; j < results.length; j++) {
         if (avoidToPickProposition.hasOwnProperty(results[j].name)) {
           avoidToPickProposition[results[j].name].score += results[j].counters[myRole][0].counterRate * counterSynergyMultiplier
