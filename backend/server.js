@@ -134,11 +134,8 @@ app.post('/selections', async (req, res) => {
       let enemyFromLane = req.body.post.enemy[lanes[i].toLowerCase()]
       let teammateFromLane = req.body.post.teammate[lanes[i].toLowerCase()]
 
-      if (enemyFromLane !== 'undefined' && enemyFromLane !== "none" && enemyFromLane !== "Wrong name!") {
-
         // Picks, Avoids and Synergies (!== myRole)
         if (lanes[i] !== myRole && myRole !== "none" && myRole !== undefined) {
-
           await client.db("what2pick").collection('champions').find({ name: enemyFromLane }).project({ name: 1, counters: 1 }).toArray()
             .then(results => {
               pushPicksIntoPicksProposition(enemyFromLane, results[0] && results[0].counters && results[0].counters[myRole], false, lanes[i], "counters")
@@ -171,7 +168,6 @@ app.post('/selections', async (req, res) => {
             })
             .catch(error => console.error(error))
         }
-      }
     } // End of iterating trough all lanes
     resolve("resolved")
   }).then(async function () {
