@@ -96,9 +96,9 @@ export class SuggestionRow extends React.Component {
                     : "Please select your role and enemies"
                 : "Please select your role and enemies"
 
-        let score = this.props.suggestions && this.props.suggestions[keywordToGetData] && this.props.suggestions[keywordToGetData][this.props.row - 1] && this.props.suggestions[keywordToGetData][this.props.row - 1][1].score * 100;
-        let counters = this.props.suggestions && this.props.suggestions[keywordToGetData] && this.props.suggestions[keywordToGetData][this.props.row - 1] && this.props.suggestions[keywordToGetData][this.props.row - 1][1].counterTo
-        let synergies = this.props.suggestions && this.props.suggestions[keywordToGetData] && this.props.suggestions[keywordToGetData][this.props.row - 1] && this.props.suggestions[keywordToGetData][this.props.row - 1][1].synergyTo
+        let score = this.props.suggestions?.[keywordToGetData]?.[this.props.row - 1]?.[1].score * 100;
+        let counters = this.props.suggestions?.[keywordToGetData]?.[this.props.row - 1]?.[1].counterTo
+        let synergies = this.props.suggestions?.[keywordToGetData]?.[this.props.row - 1]?.[1].synergyTo
 
 
         return (
