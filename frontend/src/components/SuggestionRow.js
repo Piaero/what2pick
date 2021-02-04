@@ -32,7 +32,7 @@ const Score = ({ currentChampion, score }) => {
 
 const CounterTo = ({ currentChampion, counters, counterOrAvoid }) => {
     let counterOrSynergyText = counterOrAvoid === "counter" ? "Counter to: " : "Countered by: "
-    if (currentChampion && currentChampion !== "No more counters" && currentChampion !== "Please select your role and enemies" && counters) {
+    if (currentChampion && currentChampion !== "No more counters" && currentChampion !== "Please select your role and enemies" && counters && Object.keys(counters).length !== 0) {
         let countersSorted = Object.entries(counters).sort((a, b) => (a[1].counterRate < b[1].counterRate) ? 1 : -1)
 
         return (
