@@ -231,26 +231,19 @@ export class MainSectionGrid extends React.Component {
                                 {
                                     this.state.lanes.map((lane, index) => {
                                         return (
-                                            <Draggable draggableId={lane} index={index} key={lane}>
-                                                {(provided) =>
-                                                    <div
-                                                        {...provided.draggableProps}
-                                                        {...provided.dragHandleProps}
-                                                        ref={provided.innerRef}
-                                                        key={index}>
-                                                        <ChooseChampion
-                                                            lane={lane}
-                                                            team="teammate"
-                                                            championsList={this.state.championsList}
-                                                            handleChampionChange={this.handleChampionChange}
-                                                            handleInputChange={this.handleInputChange}
-                                                            championSelected={this.state.selections.teammate[lane].champion}
-                                                            inputValue={this.state.selections.teammate[lane].inputValue} />
-                                                    </div>
-                                                }
-                                            </Draggable>
+                                            <ChooseChampion
+                                                lane={lane}
+                                                index={index}
+                                                team="teammate"
+                                                championsList={this.state.championsList}
+                                                handleChampionChange={this.handleChampionChange}
+                                                handleInputChange={this.handleInputChange}
+                                                championSelected={this.state.selections.teammate[lane].champion}
+                                                inputValue={this.state.selections.teammate[lane].inputValue}
+                                            />
                                         )
-                                    })
+                                    }
+                                    )
                                 }
                                 {provided.placeholder}
                             </div>
@@ -267,27 +260,19 @@ export class MainSectionGrid extends React.Component {
                                 {
                                     this.state.lanes.map((lane, index) => {
                                         return (
-                                            <Draggable draggableId={lane} index={index} key={lane}>
-                                                {(provided) =>
-                                                    <div
-                                                        {...provided.draggableProps}
-                                                        {...provided.dragHandleProps}
-                                                        ref={provided.innerRef}
-                                                        key={index}>
-
-                                                        <ChooseChampion
-                                                            lane={lane}
-                                                            team="enemy"
-                                                            championsList={this.state.championsList}
-                                                            handleChampionChange={this.handleChampionChange}
-                                                            handleInputChange={this.handleInputChange}
-                                                            championSelected={this.state.selections.enemy[lane].champion}
-                                                            inputValue={this.state.selections.enemy[lane].inputValue} />
-                                                    </div>
-                                                }
-                                            </Draggable>
+                                            <ChooseChampion
+                                                lane={lane}
+                                                index={index}
+                                                team="enemy"
+                                                championsList={this.state.championsList}
+                                                handleChampionChange={this.handleChampionChange}
+                                                handleInputChange={this.handleInputChange}
+                                                championSelected={this.state.selections.enemy[lane].champion}
+                                                inputValue={this.state.selections.enemy[lane].inputValue}
+                                            />
                                         )
-                                    })
+                                    }
+                                    )
                                 }
                                 {provided.placeholder}
                             </div>

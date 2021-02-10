@@ -3,6 +3,7 @@ import './ChooseChampion.css';
 
 import SearchIcon from '../assets/icons/search.svg'
 import Question from '../assets/images/question-mark.png';
+import { Draggable } from 'react-beautiful-dnd';
 
 const ChampionAvatar = ({ currentChampion, championsList, onClickHandler }) => {
     if (championsList.includes(currentChampion)) {
@@ -102,22 +103,32 @@ export class ChooseChampion extends React.Component {
 
     render() {
         return (
-            <div className="choose-champion-container">
-                <div className={`role-and-caption ${this.props.championSelected !== "Choose champion" && this.props.championSelected !== "Wrong name!" && this.props.championSelected !== null ? "active" : "inactive"}`}>
-                    <img className="role-icon" src={require(`../assets/images/${this.props.lane}_icon.png`)} alt={this.props.lane} />
-                    <span className="role-caption">{this.props.lane}</span>
-                </div>
+            <Draggable draggableId={this.props.lane} index={this.props.index} key={this.props.lane}>
+                {(provided) =>
+                    <div className="choose-champion-container"
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        ref={provided.innerRef}
+                        key={this.props.index}>
 
-                <div className="champion-avatar-and-caption">
-                    <ChampionAvatar currentChampion={this.props.championSelected} championsList={this.state.championsList} onClickHandler={this.cancelChampion} />
-                    <ChampionCaption currentChampion={this.props.championSelected} championsList={this.state.championsList} />
-                </div>
+                        <div className={`role-and-caption ${this.props.championSelected !== "Choose champion" && this.props.championSelected !== "Wrong name!" && this.props.championSelected !== null ? "active" : "inactive"}`}>
+                            <img className="role-icon" src={require(`../assets/images/${this.props.lane}_icon.png`)} alt={this.props.lane} />
+                            <span className="role-caption">{this.props.lane}</span>
+                        </div>
 
-                <div className="search-container">
-                    <button type="submit" className="search-button"><img src={SearchIcon} className="search-icon" alt="Search" /></button>
-                    <input value={this.props.inputValue} type="text" placeholder="Find champion..." name="search" onChange={this.onInputHandler} ref={(el) => this.myInput = el} />
-                </div>
-            </div>
+                        <div className="champion-avatar-and-caption">
+                            <ChampionAvatar currentChampion={this.props.championSelected} championsList={this.state.championsList} onClickHandler={this.cancelChampion} />
+                            <ChampionCaption currentChampion={this.props.championSelected} championsList={this.state.championsList} />
+                        </div>
+
+                        <div className="search-container">
+                            <button type="submit" className="search-button"><img src={SearchIcon} className="search-icon" alt="Search" /></button>
+                            <input value={this.props.inputValue} type="text" placeholder="Find champion..." name="search" onChange={this.onInputHandler} ref={(el) => this.myInput = el} />
+                        </div>
+
+                    </div>
+                }
+            </Draggable>
         )
     };
 }
