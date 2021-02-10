@@ -1,4 +1,8 @@
 import React from 'react';
+import { DragDropContext } from 'react-beautiful-dnd'
+import { Droppable } from 'react-beautiful-dnd';
+import { Draggable } from 'react-beautiful-dnd';
+
 import './MainSectionGrid.css';
 
 import { ColumnYourRole } from './ColumnYourRole.js';
@@ -12,28 +16,66 @@ export class MainSectionGrid extends React.Component {
             selections: {
                 myRole: "none",
                 teammate: {
-                    top: "none",
-                    jungle: "none",
-                    middle: "none",
-                    bottom: "none",
-                    support: "none",
-                    unknown: "none"
+                    Top: {
+                        champion: null,
+                        inputValue: ""
+                    },
+                    Jungle: {
+                        champion: null,
+                        inputValue: ""
+                    },
+                    Middle: {
+                        champion: null,
+                        inputValue: ""
+                    },
+                    Bottom: {
+                        champion: null,
+                        inputValue: ""
+                    },
+                    Support: {
+                        champion: null,
+                        inputValue: ""
+                    },
+                    Unknown: {
+                        champion: null,
+                        inputValue: ""
+                    },
                 },
                 enemy: {
-                    top: "none",
-                    jungle: "none",
-                    middle: "none",
-                    bottom: "none",
-                    support: "none",
-                    unknown: "none"
-                }
+                    Top: {
+                        champion: null,
+                        inputValue: ""
+                    },
+                    Jungle: {
+                        champion: null,
+                        inputValue: ""
+                    },
+                    Middle: {
+                        champion: null,
+                        inputValue: ""
+                    },
+                    Bottom: {
+                        champion: null,
+                        inputValue: ""
+                    },
+                    Support: {
+                        champion: null,
+                        inputValue: ""
+                    },
+                    Unknown: {
+                        champion: null,
+                        inputValue: ""
+                    },
+                },
             },
+            lanes: ["Top", "Jungle", "Middle", "Bottom", "Support", "Unknown"],
             suggestions: "none",
             championsList: null,
         }
 
         this.handleMyRoleChange = this.handleMyRoleChange.bind(this);
         this.handleChampionChange = this.handleChampionChange.bind(this);
+        this.handleInputChange = this.handleInputChange.bind(this);
     }
 
     componentDidMount() {
@@ -50,22 +92,22 @@ export class MainSectionGrid extends React.Component {
         let isEmpty = true
 
         for (let property in object.teammate) {
-            if (object.teammate[property] !== "none") {
-             isEmpty = false
-            } 
-         }
+            if (object.teammate[property] !== null) {
+                isEmpty = false
+            }
+        }
 
         for (let property in object.enemy) {
-           if (object.enemy[property] !== "none") {
-            isEmpty = false
-           } 
+            if (object.enemy[property] !== null) {
+                isEmpty = false
+            }
         }
 
         return isEmpty
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if (JSON.stringify(this.state.selections) !== JSON.stringify(prevState.selections) && (this.ifSelectionsEmpty(this.state.selections) === false || this.ifSelectionsEmpty(prevState.selections) === false) ) {
+        if (JSON.stringify(this.state.selections) !== JSON.stringify(prevState.selections) && (this.ifSelectionsEmpty(this.state.selections) === false || this.ifSelectionsEmpty(prevState.selections) === false)) {
             this.sendSelectedChampions();
         }
         console.log(this.state)
@@ -103,7 +145,65 @@ export class MainSectionGrid extends React.Component {
                 ...prevState.selections,
                 [team]: {
                     ...prevState.selections[team],
-                    [lane]: champion
+                    [lane]: {
+                        ...prevState.selections[team][lane],
+                        champion: champion,
+                    }
+                }
+            }
+        }))
+    }
+
+    handleInputChange(lane, input, team) {
+        this.setState(prevState => ({
+            selections: {
+                ...prevState.selections,
+                [team]: {
+                    ...prevState.selections[team],
+                    [lane]: {
+                        ...prevState.selections[team][lane],
+                        inputValue: input,
+                    }
+                }
+            }
+        }))
+    }
+
+    onDragEnd = (result) => {
+        const { destination, source, draggableId } = result;
+        let team = source.droppableId
+
+        if (!destination) {
+            return;
+        }
+
+        if (destination.droppableId === source.droppableId && destination.index === source.index) {
+            return;
+        }
+
+        const NameOfDraggedChampion = this.state.selections[team][draggableId].champion
+        const laneOfDraggedChampion = draggableId
+        const inputValueOfDraggedChampion = this.state.selections[team][draggableId].inputValue
+
+        const NameOfSwappedChampion = Object.values(this.state.selections[team])[destination.index].champion
+        const laneOfSwappedChampion = Object.keys(this.state.selections[team])[destination.index]
+        const inputValueOfSwappedChampion = Object.values(this.state.selections[team])[destination.index].inputValue
+
+        this.setState(prevState => ({
+            selections: {
+                ...prevState.selections,
+                [team]: {
+                    ...prevState.selections[team],
+                    [laneOfDraggedChampion]: {
+                        ...prevState.selections[team][laneOfDraggedChampion],
+                        champion: NameOfSwappedChampion,
+                        inputValue: inputValueOfSwappedChampion
+                    },
+                    [laneOfSwappedChampion]: {
+                        ...prevState.selections[team][laneOfSwappedChampion],
+                        champion: NameOfDraggedChampion,
+                        inputValue: inputValueOfDraggedChampion
+                    }
                 }
             }
         }))
@@ -122,25 +222,63 @@ export class MainSectionGrid extends React.Component {
                     <ColumnYourRole handleMyRoleChange={this.handleMyRoleChange} />
                 </div>
 
-                <div className="grid-column">
-                    <h2 className="grid-picks__title">Your Team Column</h2>
-                    <div><ChooseChampion lane="Top" championsList={this.state.championsList} handleChampionChange={this.handleChampionChange} team="teammate" /></div>
-                    <div><ChooseChampion lane="Jungle" championsList={this.state.championsList} handleChampionChange={this.handleChampionChange} team="teammate" /></div>
-                    <div><ChooseChampion lane="Middle" championsList={this.state.championsList} handleChampionChange={this.handleChampionChange} team="teammate" /></div>
-                    <div><ChooseChampion lane="Bottom" championsList={this.state.championsList} handleChampionChange={this.handleChampionChange} team="teammate" /></div>
-                    <div><ChooseChampion lane="Support" championsList={this.state.championsList} handleChampionChange={this.handleChampionChange} team="teammate" /></div>
-                    <div><ChooseChampion lane="Unknown" championsList={this.state.championsList} handleChampionChange={this.handleChampionChange} team="teammate" /></div>
-                </div>
+                <DragDropContext onDragEnd={this.onDragEnd}>
+                    <Droppable droppableId="teammate">
+                        {(provided) => (
+                            <div className="grid-column" ref={provided.innerRef}
+                                {...provided.droppableProps}>
+                                <h2 className="grid-picks__title">Your Team Column</h2>
+                                {
+                                    this.state.lanes.map((lane, index) => {
+                                        return (
+                                            <ChooseChampion
+                                                lane={lane}
+                                                index={index}
+                                                team="teammate"
+                                                championsList={this.state.championsList}
+                                                handleChampionChange={this.handleChampionChange}
+                                                handleInputChange={this.handleInputChange}
+                                                championSelected={this.state.selections.teammate[lane].champion}
+                                                inputValue={this.state.selections.teammate[lane].inputValue}
+                                            />
+                                        )
+                                    }
+                                    )
+                                }
+                                {provided.placeholder}
+                            </div>
+                        )}
+                    </Droppable>
+                </DragDropContext>
 
-                <div className="grid-column">
-                    <h2 className="grid-picks__title">Enemy Team Column</h2>
-                    <div><ChooseChampion lane="Top" championsList={this.state.championsList} handleChampionChange={this.handleChampionChange} team="enemy" /></div>
-                    <div><ChooseChampion lane="Jungle" championsList={this.state.championsList} handleChampionChange={this.handleChampionChange} team="enemy" /></div>
-                    <div><ChooseChampion lane="Middle" championsList={this.state.championsList} handleChampionChange={this.handleChampionChange} team="enemy" /></div>
-                    <div><ChooseChampion lane="Bottom" championsList={this.state.championsList} handleChampionChange={this.handleChampionChange} team="enemy" /></div>
-                    <div><ChooseChampion lane="Support" championsList={this.state.championsList} handleChampionChange={this.handleChampionChange} team="enemy" /></div>
-                    <div><ChooseChampion lane="Unknown" championsList={this.state.championsList} handleChampionChange={this.handleChampionChange} team="enemy" /></div>
-                </div>
+                <DragDropContext onDragEnd={this.onDragEnd}>
+                    <Droppable droppableId="enemy">
+                        {(provided) => (
+                            <div className="grid-column" ref={provided.innerRef}
+                                {...provided.droppableProps}>
+                                <h2 className="grid-picks__title">Enemy Team Column</h2>
+                                {
+                                    this.state.lanes.map((lane, index) => {
+                                        return (
+                                            <ChooseChampion
+                                                lane={lane}
+                                                index={index}
+                                                team="enemy"
+                                                championsList={this.state.championsList}
+                                                handleChampionChange={this.handleChampionChange}
+                                                handleInputChange={this.handleInputChange}
+                                                championSelected={this.state.selections.enemy[lane].champion}
+                                                inputValue={this.state.selections.enemy[lane].inputValue}
+                                            />
+                                        )
+                                    }
+                                    )
+                                }
+                                {provided.placeholder}
+                            </div>
+                        )}
+                    </Droppable>
+                </DragDropContext>
 
                 <div className="sugestions-column">
                     <div className="grid-picks__title"><h2>Best champion for your selected role:</h2></div>

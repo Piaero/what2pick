@@ -131,43 +131,43 @@ app.post('/selections', async (req, res) => {
   new Promise(async function (resolve, reject) {
 
     for (var i = 0; i < lanes.length; i++) {
-      let enemyFromLane = req.body.post.enemy[lanes[i].toLowerCase()]
-      let teammateFromLane = req.body.post.teammate[lanes[i].toLowerCase()]
+      let enemyFromLane = req.body.post.enemy[lanes[i]].champion ? req.body.post.enemy[lanes[i]].champion : "None because null would still make call to DB"
+      let teammateFromLane = req.body.post.teammate[lanes[i]].champion
 
-        // Picks, Avoids and Synergies (!== myRole)
-        if (lanes[i] !== myRole && myRole !== "none" && myRole !== undefined) {
-          await client.db("what2pick").collection('champions').find({ name: enemyFromLane }).project({ name: 1, counters: 1 }).toArray()
-            .then(results => {
-              pushPicksIntoPicksProposition(enemyFromLane, results[0] && results[0].counters && results[0].counters[myRole], false, lanes[i], "counters")
-            })
-            .catch(error => console.error(error))
+      // Picks, Avoids and Synergies (!== myRole)
+      if (lanes[i] !== myRole && myRole !== "none" && myRole !== undefined) {
+        await client.db("what2pick").collection('champions').find({ name: enemyFromLane }).project({ name: 1, counters: 1 }).toArray()
+          .then(results => {
+            pushPicksIntoPicksProposition(enemyFromLane, results[0] && results[0].counters && results[0].counters[myRole], false, lanes[i], "counters")
+          })
+          .catch(error => console.error(error))
 
-          await client.db("what2pick").collection('champions').find({ [queryForAvoidToCounter]: enemyFromLane }).project({ [projectionForAvoidToCounter]: 1, name: 1 }).toArray()
-            .then(results => {
-              pushAvoidToPickIntoAvoidsProposition(enemyFromLane, results, false, lanes[i])
-            })
-            .catch(error => console.error(error))
+        await client.db("what2pick").collection('champions').find({ [queryForAvoidToCounter]: enemyFromLane }).project({ [projectionForAvoidToCounter]: 1, name: 1 }).toArray()
+          .then(results => {
+            pushAvoidToPickIntoAvoidsProposition(enemyFromLane, results, false, lanes[i])
+          })
+          .catch(error => console.error(error))
 
-          await client.db("what2pick").collection('champions').find({ name: teammateFromLane }).project({ name: 1, synergies: 1 }).toArray()
-            .then(results => {
-              pushPicksIntoPicksProposition(teammateFromLane, results[0] && results[0].synergies, null, lanes[i], "synergies")
-            })
-            .catch(error => console.error(error))
+        await client.db("what2pick").collection('champions').find({ name: teammateFromLane }).project({ name: 1, synergies: 1 }).toArray()
+          .then(results => {
+            pushPicksIntoPicksProposition(teammateFromLane, results[0] && results[0].synergies, null, lanes[i], "synergies")
+          })
+          .catch(error => console.error(error))
 
-          // Picks and Avoids (myRole)
-        } else if (myRole !== "none" && myRole !== undefined) {
-          await client.db("what2pick").collection('champions').find({ name: enemyFromLane }).project({ name: 1, counters: 1 }).toArray()
-            .then(results => {
-              pushPicksIntoPicksProposition(enemyFromLane, results[0] && results[0].counters && results[0].counters[myRole], true, lanes[i], "counters")
-            })
-            .catch(error => console.error(error))
+        // Picks and Avoids (myRole)
+      } else if (myRole !== "none" && myRole !== undefined) {
+        await client.db("what2pick").collection('champions').find({ name: enemyFromLane }).project({ name: 1, counters: 1 }).toArray()
+          .then(results => {
+            pushPicksIntoPicksProposition(enemyFromLane, results[0] && results[0].counters && results[0].counters[myRole], true, lanes[i], "counters")
+          })
+          .catch(error => console.error(error))
 
-          await client.db("what2pick").collection('champions').find({ [queryForAvoidToCounter]: enemyFromLane }).project({ [projectionForAvoidToCounter]: 1, name: 1 }).toArray()
-            .then(results => {
-              pushAvoidToPickIntoAvoidsProposition(enemyFromLane, results, true, lanes[i])
-            })
-            .catch(error => console.error(error))
-        }
+        await client.db("what2pick").collection('champions').find({ [queryForAvoidToCounter]: enemyFromLane }).project({ [projectionForAvoidToCounter]: 1, name: 1 }).toArray()
+          .then(results => {
+            pushAvoidToPickIntoAvoidsProposition(enemyFromLane, results, true, lanes[i])
+          })
+          .catch(error => console.error(error))
+      }
     } // End of iterating trough all lanes
     resolve("resolved")
   }).then(async function () {
