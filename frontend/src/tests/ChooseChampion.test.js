@@ -9,7 +9,15 @@ const lanes = ["Top", "Jungle", "Middle", "Bottom", "Support"]
 const champions = ["Aatrox", "Ahri", "Akali", "Alistar", "Amumu", "Anivia", "Annie", "Aphelios", "Ashe", "Aurelion Sol", "Azir", "Bard", "Blitzcrank", "Brand", "Braum", "Caitlyn", "Camille", "Cassiopeia", "Cho'Gath", "Corki", "Darius", "Diana", "Dr. Mundo", "Draven", "Ekko", "Elise", "Evelynn", "Ezreal", "Fiddlesticks", "Fiora", "Fizz", "Galio", "Gangplank", "Garen", "Gnar", "Gragas", "Graves", "Hecarim", "Heimerdinger", "Illaoi", "Irelia", "Ivern", "Janna", "Jarvan IV", "Jax", "Jayce", "Jhin", "Jinx", "Kai'Sa", "Kalista", "Karma", "Karthus", "Kassadin", "Katarina", "Kayle", "Kayn", "Kennen", "Kha'Zix", "Kindred", "Kled", "Kog'Maw", "LeBlanc", "Lee Sin", "Leona", "Lissandra", "Lucian", "Lulu", "Lux", "Malphite", "Malzahar", "Maokai", "Master Yi", "Miss Fortune", "Mordekaiser", "Morgana", "Nami", "Nasus", "Nautilus", "Neeko", "Nidalee", "Nocturne", "Nunu", "Olaf", "Orianna", "Ornn", "Pantheon", "Poppy", "Pyke", "Qiyana", "Quinn", "Rakan", "Rammus", "Rek'Sai", "Renekton", "Rengar", "Riven", "Rumble", "Ryze", "Sejuani", "Senna", "Sett", "Shaco", "Shen", "Shyvana", "Singed", "Sion", "Sivir", "Skarner", "Sona", "Soraka", "Swain", "Sylas", "Syndra", "Tahm Kench", "Taliyah", "Talon", "Taric", "Teemo", "Thresh", "Tristana", "Trundle", "Tryndamere", "Twisted Fate", "Twitch", "Udyr", "Urgot", "Varus", "Vayne", "Veigar", "Vel'Koz", "Vi", "Viktor", "Vladimir", "Volibear", "Warwick", "Wukong", "Xayah", "Xerath", "Xin Zhao", "Yasuo", "Yorick", "Yuumi", "Zac", "Zed", "Ziggs", "Zilean", "Zoe", "Zyra"];
 
 const handleChampionChange = jest.fn();
-const ChooseChampionComponent = <ChooseChampion lane="Top" championsList={champions} team="teammate" handleChampionChange={handleChampionChange} />
+const handleInputChange = jest.fn();
+
+const ChooseChampionComponent = <ChooseChampion
+  lane="Top"
+  team="teammate"
+  championsList={champions}
+  handleChampionChange={handleChampionChange}
+  handleInputChange={handleInputChange} />
+
 const wrapper = mount(ChooseChampionComponent);
 
 describe('Choose Champion rendering in various cases', () => {
@@ -24,7 +32,8 @@ describe('Choose Champion rendering in various cases', () => {
     wrapper.find('input').simulate('change', { target: { value: "Aatrox" } });
 
     expect(wrapper.state('championSelected')).toBe("Aatrox");
-    expect(wrapper.find('.champion-caption').text()).toEqual("Aatrox");
+    // Removed because it is now managed from parent component
+    // expect(wrapper.find('.champion-caption').text()).toEqual("Aatrox");
   });
 
 
@@ -33,7 +42,8 @@ describe('Choose Champion rendering in various cases', () => {
       wrapper.find('input').simulate('change', { target: { value: e } });
 
       expect(wrapper.state('championSelected')).toBe(e);
-      expect(wrapper.find('.champion-caption').text()).toEqual(e);
+      // Removed because it is now managed from parent component
+      // expect(wrapper.find('.champion-caption').text()).toEqual(e);
     })
   });
 
