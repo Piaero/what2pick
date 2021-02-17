@@ -1,7 +1,6 @@
 import React from 'react';
 import { DragDropContext } from 'react-beautiful-dnd'
 import { Droppable } from 'react-beautiful-dnd';
-import { Draggable } from 'react-beautiful-dnd';
 
 import './MainSectionGrid.css';
 
@@ -280,15 +279,18 @@ export class MainSectionGrid extends React.Component {
                     </Droppable>
                 </DragDropContext>
 
-                <div className="sugestions-column">
+                <div className="suggestions-column">
                     <div className="grid-picks__title"><h2>Best champion for your selected role:</h2></div>
-                    <div> <SuggestionRow suggestions={this.state.suggestions} row={1} counterOrAvoid="counter" /> </div>
-                    <div> <SuggestionRow suggestions={this.state.suggestions} row={2} counterOrAvoid="counter" /> </div>
-                    <div> <SuggestionRow suggestions={this.state.suggestions} row={3} counterOrAvoid="counter" /> </div>
-                    <div className="grid-picks__title"><h2>Avoid to pick</h2></div>
-                    <div><SuggestionRow suggestions={this.state.suggestions} row={1} counterOrAvoid="avoid" /></div>
-                    <div><SuggestionRow suggestions={this.state.suggestions} row={2} counterOrAvoid="avoid" /></div>
-                    <div><SuggestionRow suggestions={this.state.suggestions} row={3} counterOrAvoid="avoid" /></div>
+
+                    <SuggestionRow suggestions={this.state.suggestions} row={1} counterOrAvoid="counter" />
+                    <SuggestionRow suggestions={this.state.suggestions} row={2} counterOrAvoid="counter" />
+                    <SuggestionRow suggestions={this.state.suggestions} row={3} counterOrAvoid="counter" />
+
+                    <div className="grid-picks__title avoid"><h2>Avoid to pick</h2></div>
+
+                    <SuggestionRow suggestions={this.state.suggestions} row={1} counterOrAvoid="avoid" />
+                    <SuggestionRow suggestions={this.state.suggestions} row={2} counterOrAvoid="avoid" />
+                    <SuggestionRow suggestions={this.state.suggestions} row={3} counterOrAvoid="avoid" />
                 </div>
 
             </section>
