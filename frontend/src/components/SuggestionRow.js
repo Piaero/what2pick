@@ -3,7 +3,7 @@ import './SuggestionRow.css';
 
 const ChampionAvatarAndCaption = ({ currentChampion }) => {
     if (currentChampion && currentChampion !== "No more counters" && currentChampion !== "Please select your role and enemies") {
-        return (<div className="champion-avatar-and-caption">
+        return (<div className="champion-avatar-and-caption__suggestion">
             <div>
                 <img className="champion-avatar" src={require(`../assets/images/champions/${currentChampion.replace(" ", "_")}Square.png`)} alt={currentChampion} />
             </div>
@@ -22,7 +22,7 @@ const Score = ({ currentChampion, score }) => {
         // consider putting the score under the champion name
         return (
             <div className="score-container">
-                SCORE: {Math.round(score)}%
+                <strong>SCORE: {Math.round(score)}%</strong>
             </div>
         )
     } else {
@@ -100,29 +100,37 @@ export class SuggestionRow extends React.Component {
         let counters = this.props.suggestions?.[keywordToGetData]?.[this.props.row - 1]?.[1].counterTo
         let synergies = this.props.suggestions?.[keywordToGetData]?.[this.props.row - 1]?.[1].synergyTo
 
+if (!counters) {
+    return (
+        <section>
+        <div></div>
+        <div></div>
+        <div></div>
+        </section>
+    )
+} else {
+    return (
+        <div className="sugestion-entry">
+            <ChampionAvatarAndCaption currentChampion={championName} />
+            <div className="details-container">
 
-        return (
-            <div className="sugestion-entry">
-                <br />
-                <ChampionAvatarAndCaption currentChampion={championName} />
-                <br />
-                <div className="details-container">
-
-                    <div className="score">
-                        <Score currentChampion={championName} score={score} />
-                    </div>
-
-                    <div className="counter-to">
-                        <CounterTo currentChampion={championName} counters={counters} counterOrAvoid={this.props.counterOrAvoid} />
-                    </div>
-
-                    <div className="synergy-with">
-                        <SynergyWith currentChampion={championName} synergies={synergies} />
-                    </div>
-
+                <div className="score">
+                    <Score currentChampion={championName} score={score} />
                 </div>
+
+                <div className="counter-to">
+                    <CounterTo currentChampion={championName} counters={counters} counterOrAvoid={this.props.counterOrAvoid} />
+                </div>
+
+                <div className="synergy-with">
+                    <SynergyWith currentChampion={championName} synergies={synergies} />
+                </div>
+
             </div>
-        )
+        </div>
+    )
+}
+      
     };
 }
 

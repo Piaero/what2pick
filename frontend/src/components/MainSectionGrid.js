@@ -280,13 +280,13 @@ export class MainSectionGrid extends React.Component {
                 </DragDropContext>
 
                 <div className="suggestions-column">
-                    <div className="grid-picks__title"><h2>Best champion for your selected role:</h2></div>
+                    <h2 className="grid-picks__title">Best champion for your selected role:</h2>
 
                     <SuggestionRow suggestions={this.state.suggestions} row={1} counterOrAvoid="counter" />
                     <SuggestionRow suggestions={this.state.suggestions} row={2} counterOrAvoid="counter" />
                     <SuggestionRow suggestions={this.state.suggestions} row={3} counterOrAvoid="counter" />
 
-                    <div className="grid-picks__title avoid"><h2>Avoid to pick</h2></div>
+                    <h2 className="grid-picks__title">Avoid to pick</h2>
 
                     <SuggestionRow suggestions={this.state.suggestions} row={1} counterOrAvoid="avoid" />
                     <SuggestionRow suggestions={this.state.suggestions} row={2} counterOrAvoid="avoid" />

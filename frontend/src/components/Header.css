@@ -1,3 +1,12 @@
+h1.title {
+  color: black;
+  font-family: Arial, Helvetica, sans-serif;
+  -webkit-text-stroke-width: 0.3px;
+  -webkit-text-stroke-color: white;
+  font-size: 45px;
+  text-decoration: none;
+}
+
 header {
   text-align: center;
   margin-top: 15px;

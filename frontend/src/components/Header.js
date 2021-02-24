@@ -9,7 +9,6 @@ export class Header extends React.Component {
       <header>
         <img src={logo} alt="www.what2pick.com" className="logo" />
         <a href="www.what2pick.com"><h1 className="title">what2pick.com</h1></a>
-        <hr />
       </header>
     )
   };

@@ -1,5 +1,9 @@
 .choose-champion-container {
     display: flex;
+    background-color: var(--background);
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 7px;
 }
 
 .role-caption,
@@ -17,6 +21,7 @@
 .champion-avatar {
     width: 70px;
     margin-top: 5px;
+    border-radius: 5%;
 }
 
 .champion-avatar-other {
@@ -29,7 +34,8 @@
 }
 
 .search-container {
-    margin-top: 30px;
+    display: flex;
+    align-items: center;
     margin-left: 10px;
 }
 
@@ -38,11 +44,16 @@
 }
 
 .search-icon {
-    width: 11px;
+    padding-top: 2px;
+    width: 15px;
 }
 
 .cancel-button {
     width: 20px;
     position: absolute;
     cursor: pointer;
+}
+
+input[type=text] {
+    height: 20px;
 }

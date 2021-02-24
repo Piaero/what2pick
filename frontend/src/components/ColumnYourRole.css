@@ -1,11 +1,15 @@
+.role-container {
+    text-align: center;
+    background-color: rgba(211, 211, 211, 0.8);
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 7px;
+}
+
 .role-caption {
     margin-top: -7px;
     font-weight: bold;
 }
-
-.role-container {
-    text-align: center;
-  }
 
 .role-container:hover {
     opacity: 1;
