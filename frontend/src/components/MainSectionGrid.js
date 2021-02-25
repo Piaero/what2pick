@@ -226,7 +226,7 @@ export class MainSectionGrid extends React.Component {
                         {(provided) => (
                             <div className="grid-column" ref={provided.innerRef}
                                 {...provided.droppableProps}>
-                                <h2 className="grid-picks__title">Your Team Column</h2>
+                                <h2 className="grid-picks__title">Your Team</h2>
                                 {
                                     this.state.lanes.map((lane, index) => {
                                         return (
@@ -255,7 +255,7 @@ export class MainSectionGrid extends React.Component {
                         {(provided) => (
                             <div className="grid-column" ref={provided.innerRef}
                                 {...provided.droppableProps}>
-                                <h2 className="grid-picks__title">Enemy Team Column</h2>
+                                <h2 className="grid-picks__title">Enemy Team</h2>
                                 {
                                     this.state.lanes.map((lane, index) => {
                                         return (

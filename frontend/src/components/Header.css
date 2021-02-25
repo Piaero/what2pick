@@ -5,6 +5,7 @@ h1.title {
   -webkit-text-stroke-color: white;
   font-size: 45px;
   text-decoration: none;
+  margin-bottom: 20px;
 }
 
 header {

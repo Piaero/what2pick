@@ -1,5 +1,4 @@
 .choose-champion-container {
-    display: flex;
     background-color: var(--background);
     border-style: solid;
     border-width: 2px;
@@ -13,9 +12,18 @@
     text-align: center;
 }
 
+.role-and-caption {
+    float: left;
+}
+
 .champion-avatar-and-caption {
-    display: block;
+    float: left;
     text-align: center;
+}
+
+.choose-champion-caption {
+    font-size: 10px;
+    margin-top: 10px;
 }
 
 .champion-avatar {
@@ -28,23 +36,21 @@
     margin-top: 10px;
 }
 
-.choose-champion-caption {
-    font-size: 10px;
-    margin-top: 10px;
-}
-
 .search-container {
+    float: right;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
     display: flex;
-    align-items: center;
-    margin-left: 10px;
+    margin-right: 9px;
 }
 
 .search-button {
+    pointer-events: none;
     margin-right: -1px;
 }
 
 .search-icon {
-    padding-top: 2px;
     width: 15px;
 }
 
@@ -55,5 +61,8 @@
 }
 
 input[type=text] {
-    height: 20px;
+    border-radius: 5px;
+    width: 160px;
+    height: 30px;
+    font-size: 17px;
 }
