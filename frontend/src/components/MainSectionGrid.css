@@ -1,8 +1,8 @@
 :root {
-  --background: rgba(211,211,211, 0.7);
+  --background: rgba(211, 211, 211, 0.7);
 }
 
- body {
+body {
   background: url(../assets/images/background.jpg) no-repeat center center fixed;
   background-size: cover;
   backdrop-filter: blur(5px) saturate(40%);
@@ -15,11 +15,12 @@
 
 hr {
   border: 0;
-  height: 0; /* Firefox... */
+  height: 0;
+  /* Firefox... */
   box-shadow: 0 0 5px 2px black;
 }
 
-h2.grid-picks__title { 
+h2.grid-picks__title {
   margin-block-start: 0.06em;
   margin-block-end: 0.06em;
   padding-bottom: 0.1em;
@@ -46,7 +47,7 @@ h2.grid-picks__title {
   display: grid;
   width: 100%;
   grid-gap: 8px;
-  grid-template-rows: 0.5fr repeat(6, 2.65fr);
+  grid-template-rows: 0.5fr repeat(6, 2.7fr);
 }
 
 .suggestions-column {

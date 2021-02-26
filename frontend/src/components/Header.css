@@ -1,4 +1,7 @@
 h1.title {
+  display: inline-block;
+  margin-top: 0px;
+  margin-left: 10px;
   color: black;
   font-family: Arial, Helvetica, sans-serif;
   -webkit-text-stroke-width: 0.3px;
@@ -18,11 +21,4 @@ header {
   width: auto;
   display: inline-block;
   vertical-align: top;
-}
-
-.title {
-  font-family: "Palatino Linotype", "Book Antiqua", "Palatino", serif;
-  display: inline-block;
-  vertical-align: top;
-  margin-top: 10px;
 }

@@ -57,6 +57,7 @@
 .cancel-button {
     width: 20px;
     position: absolute;
+    margin-top: 5px;
     cursor: pointer;
 }
 
