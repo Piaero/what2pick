@@ -41,8 +41,8 @@ const CounterTo = ({ currentChampion, counters, counterOrAvoid }) => {
                 {
                     countersSorted.map(function (item, i) {
                         return <div key={i} className="counter-synergy-entry">
-                            {item[0]} <br />
-                            <div className="score"> {Math.round(item[1].counterRate * 100)} % </div>
+                            <div className="champion-or-score">{item[0]} <br /></div>
+                            <div className="champion-or-score">{Math.round(item[1].counterRate * 100)} %</div>
                         </div>
                     })
 
@@ -64,8 +64,8 @@ const SynergyWith = ({ currentChampion, synergies }) => {
                 {
                     synergiesSorted.map(function (item, i) {
                         return <div key={i} className="counter-synergy-entry">
-                            {item[0]}<br />
-                            <div className="score"> {Math.round(item[1].synergyRate * 100)} % </div>
+                            <div className="champion-or-score">{item[0]}<br /></div>
+                            <div className="champion-or-score">{Math.round(item[1].synergyRate * 100)} %</div>
                         </div>
                     })
                 }
