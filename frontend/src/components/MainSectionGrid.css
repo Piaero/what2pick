@@ -33,7 +33,7 @@ h2.grid-picks__title {
 
 .grid-picks {
   display: grid;
-  width: 80%;
+  width: 1600px;
   grid-template-columns: 0.4fr 0.8fr 0.8fr 1fr;
   grid-column-gap: 25px;
   grid-gap: 20px;
