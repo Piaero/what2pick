@@ -42,8 +42,8 @@ const CounterTo = ({ currentChampion, counters, counterOrAvoid }) => {
                     countersSorted.map(function (item, i) {
                         return <div key={i} className="counter-synergy-entry">
                             {item[0]} <br />
-                            {Math.round(item[1].counterRate * 100)} %
-        </div>
+                            <div className="score"> {Math.round(item[1].counterRate * 100)} % </div>
+                        </div>
                     })
 
                 }
@@ -65,8 +65,8 @@ const SynergyWith = ({ currentChampion, synergies }) => {
                     synergiesSorted.map(function (item, i) {
                         return <div key={i} className="counter-synergy-entry">
                             {item[0]}<br />
-                            {Math.round(item[1].synergyRate * 100)} %
-        </div>
+                            <div className="score"> {Math.round(item[1].synergyRate * 100)} % </div>
+                        </div>
                     })
                 }
             </div>
@@ -100,37 +100,37 @@ export class SuggestionRow extends React.Component {
         let counters = this.props.suggestions?.[keywordToGetData]?.[this.props.row - 1]?.[1].counterTo
         let synergies = this.props.suggestions?.[keywordToGetData]?.[this.props.row - 1]?.[1].synergyTo
 
-if (!counters) {
-    return (
-        <section>
-        <div></div>
-        <div></div>
-        <div></div>
-        </section>
-    )
-} else {
-    return (
-        <div className="sugestion-entry">
-            <ChampionAvatarAndCaption currentChampion={championName} />
-            <div className="details-container">
+        if (!counters) {
+            return (
+                <section>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </section>
+            )
+        } else {
+            return (
+                <div className="sugestion-entry">
+                    <ChampionAvatarAndCaption currentChampion={championName} />
+                    <div className="details-container">
 
-                <div className="score">
-                    <Score currentChampion={championName} score={score} />
+                        <div className="score">
+                            <Score currentChampion={championName} score={score} />
+                        </div>
+
+                        <div className="counter-to">
+                            <CounterTo currentChampion={championName} counters={counters} counterOrAvoid={this.props.counterOrAvoid} />
+                        </div>
+
+                        <div className="synergy-with">
+                            <SynergyWith currentChampion={championName} synergies={synergies} />
+                        </div>
+
+                    </div>
                 </div>
+            )
+        }
 
-                <div className="counter-to">
-                    <CounterTo currentChampion={championName} counters={counters} counterOrAvoid={this.props.counterOrAvoid} />
-                </div>
-
-                <div className="synergy-with">
-                    <SynergyWith currentChampion={championName} synergies={synergies} />
-                </div>
-
-            </div>
-        </div>
-    )
-}
-      
     };
 }
 

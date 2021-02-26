@@ -23,7 +23,11 @@
     margin-right: 5px;
 }
 
-.details-container{
-position: absolute;
-margin-left: 90px;
+.details-container {
+    position: absolute;
+    margin-left: 90px;
+}
+
+.score {
+    text-align: center;
 }
