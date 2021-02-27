@@ -18,7 +18,7 @@
 
 .champion-avatar-and-caption {
     float: left;
-    text-align: center;
+    margin-left: 10px;
 }
 
 .choose-champion-caption {
@@ -34,6 +34,8 @@
 
 .champion-avatar-other {
     margin-top: 10px;
+    margin-left: 15px;
+    margin-right: 15px;
 }
 
 .search-container {
