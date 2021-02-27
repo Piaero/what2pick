@@ -15,7 +15,7 @@ const ChampionAvatar = ({ currentChampion, championsList, onClickHandler }) => {
         )
     } else if (currentChampion === "Wrong name!") {
         return (
-            <div>
+            <div className="champion-avatar-container">
                 <img className="champion-avatar-other" src={require(`../assets/images/exclamation-mark.png`)} alt={currentChampion} />
                 <img src={require(`../assets/icons/cancel.svg`)} className="cancel-button" alt="Cancel" onClick={onClickHandler} />
             </div>

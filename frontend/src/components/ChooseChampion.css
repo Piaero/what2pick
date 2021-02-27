@@ -27,7 +27,7 @@
 }
 
 .champion-avatar {
-    width: 70px;
+    max-width: 70px;
     margin-top: 5px;
     border-radius: 5%;
 }
