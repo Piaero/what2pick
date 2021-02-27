@@ -122,7 +122,7 @@ export class ChooseChampion extends React.Component {
                         </div>
 
                         <div className="search-container">
-                            <button tabindex="-1" type="submit" className="search-button"><img src={SearchIcon} className="search-icon" alt="Search" /></button>
+                            <button tabIndex="-1" type="submit" className="search-button"><img src={SearchIcon} className="search-icon" alt="Search" /></button>
                             <input value={this.props.inputValue} type="text" placeholder="Find champion..." name="search" onChange={this.onInputHandler} ref={(el) => this.myInput = el} />
                         </div>
 
