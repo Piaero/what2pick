@@ -294,6 +294,7 @@ export class MainSectionGrid extends React.Component {
                                                 handleInputChange={this.handleInputChange}
                                                 championSelected={this.state.selections.teammate[lane].champion}
                                                 inputValue={this.state.selections.teammate[lane].inputValue}
+                                                key={index}
                                             />
                                         )
                                     }
@@ -323,6 +324,7 @@ export class MainSectionGrid extends React.Component {
                                                 handleInputChange={this.handleInputChange}
                                                 championSelected={this.state.selections.enemy[lane].champion}
                                                 inputValue={this.state.selections.enemy[lane].inputValue}
+                                                key={index}
                                             />
                                         )
                                     }
