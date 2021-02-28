@@ -54,7 +54,7 @@ h2.grid-picks__title {
   display: grid;
   width: 100%;
   grid-gap: 8px;
-  grid-template-rows: 0.4fr repeat(3, 1fr) 0.4fr repeat(3, 1fr);
+  grid-template-rows: 42px repeat(3, 1fr) 0.4fr repeat(3, 1fr);
   row-gap: 3px;
 }
 
