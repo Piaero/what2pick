@@ -128,6 +128,27 @@ app.post('/selections', async (req, res) => {
     return proposition
   }
 
+  function createDeclaredChampionsArray(post) {
+    let declaredTeammates = [];
+    let declaredEnemies = [];
+
+    Object.entries(post.teammate).forEach((element) => {
+      if (element[1].champion !== null) {
+        declaredTeammates.push(element[1].champion)
+      }
+    })
+
+    Object.entries(post.enemy).forEach((element) => {
+      if (element[1].champion !== null) {
+        declaredEnemies.push(element[1].champion)
+      }
+    })
+
+    let declaredChampions = declaredTeammates.concat(declaredEnemies)
+
+    return declaredChampions
+  }
+
   new Promise(async function (resolve, reject) {
 
     for (var i = 0; i < lanes.length; i++) {
@@ -182,6 +203,16 @@ app.post('/selections', async (req, res) => {
     for (let i = 0; i < Object.entries(picksAndAvoidsPropositionSorted.bestAvoids).length; i++) {
       if (picksAndAvoidsPropositionSorted.bestPicks.hasOwnProperty(Object.entries(picksAndAvoidsPropositionSorted.bestAvoids)[i][0])) {
         picksAndAvoidsPropositionSorted.bestPicks[Object.entries(picksAndAvoidsPropositionSorted.bestAvoids)[i][0]].score -= picksAndAvoidsPropositionSorted.bestAvoids[Object.entries(picksAndAvoidsPropositionSorted.bestAvoids)[i][0]].score
+      }
+    }
+
+    // Remove from propositions champions that are already declared
+    let declaredChampions = createDeclaredChampionsArray(req.body.post)
+    for (let i = 0; i < declaredChampions.length; i++) {
+      if (picksAndAvoidsPropositionSorted.bestPicks.hasOwnProperty(declaredChampions[i])) {
+        delete picksAndAvoidsPropositionSorted.bestPicks[declaredChampions[i]]
+      } else if (picksAndAvoidsPropositionSorted.bestAvoids.hasOwnProperty(declaredChampions[i])) {
+        delete picksAndAvoidsPropositionSorted.bestAvoids[declaredChampions[i]];
       }
     }
 
