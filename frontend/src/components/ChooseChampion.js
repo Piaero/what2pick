@@ -110,7 +110,7 @@ export class ChooseChampion extends React.Component {
                         {...provided.dragHandleProps}
                         ref={provided.innerRef}
                         key={this.props.index}
-                        tabindex="-1">
+                        tabIndex="-1">
 
                         <div className={`role-and-caption ${this.props.championSelected !== "Choose champion" && this.props.championSelected !== "Wrong name!" && this.props.championSelected !== null ? "active" : "inactive"}`}>
                             <img className="role-icon" src={require(`../assets/images/${this.props.lane}_icon.png`)} alt={this.props.lane} />
