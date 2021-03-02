@@ -109,7 +109,8 @@ export class ChooseChampion extends React.Component {
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
                         ref={provided.innerRef}
-                        key={this.props.index}>
+                        key={this.props.index}
+                        tabindex="-1">
 
                         <div className={`role-and-caption ${this.props.championSelected !== "Choose champion" && this.props.championSelected !== "Wrong name!" && this.props.championSelected !== null ? "active" : "inactive"}`}>
                             <img className="role-icon" src={require(`../assets/images/${this.props.lane}_icon.png`)} alt={this.props.lane} />
@@ -123,7 +124,7 @@ export class ChooseChampion extends React.Component {
 
                         <div className="search-container">
                             <button tabIndex="-1" type="submit" className="search-button"><img src={SearchIcon} className="search-icon" alt="Search" /></button>
-                            <input value={this.props.inputValue} type="text" placeholder="Find champion..." name="search" onChange={this.onInputHandler} ref={(el) => this.myInput = el} />
+                            <input value={this.props.inputValue} type="text" placeholder="Find champion..." name="search" onChange={this.onInputHandler} />
                         </div>
 
                     </div>
