@@ -1,7 +1,7 @@
 # what2pick
 League of Legends champion pick helper
 
-## Live hosted version (takes some time to launch):
+## Live hosted version (free hosting so it takes some time to launch):
 https://what2pick.herokuapp.com/
 
 ## Purpose
